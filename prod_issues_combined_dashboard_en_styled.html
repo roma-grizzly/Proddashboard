@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Combined Production Issues Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root{
+    --bg: #f6f8fb;
+    --card: #ffffff;
+    --card-2: #f9fbfd;
+    --text: #162033;
+    --muted: #667085;
+    --line: #e7edf5;
+    --line-2: #d7e2ef;
+    --blue: #4a7dff;
+    --blue-soft: rgba(74,125,255,0.14);
+    --green: #2ca87f;
+    --green-soft: rgba(44,168,127,0.14);
+    --orange: #f28b54;
+    --orange-soft: rgba(242,139,84,0.16);
+    --teal: #2bb3c0;
+    --teal-soft: rgba(43,179,192,0.15);
+    --yellow: #e3b341;
+    --yellow-soft: rgba(227,179,65,0.16);
+    --shadow: 0 10px 30px rgba(16,24,40,0.06);
+    --radius-xl: 20px;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background:
+      radial-gradient(circle at top right, #eef4ff 0, rgba(238,244,255,0) 28%),
+      radial-gradient(circle at top left, #effcf7 0, rgba(239,252,247,0) 24%),
+      var(--bg);
+    color: var(--text);
+    line-height: 1.45;
+  }
+
+  .shell {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 28px 22px 36px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #ffffff 0%, #f7fbff 100%);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 24px 26px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #eef4ff;
+    color: #3658b3;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: 30px;
+    line-height: 1.15;
+    margin: 0 0 8px;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 920px;
+    margin: 0;
+  }
+
+  .tabs {
+    display: inline-flex;
+    gap: 8px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--line);
+    padding: 6px;
+    border-radius: 14px;
+    margin: 20px 0 22px;
+    backdrop-filter: blur(6px);
+  }
+
+  .tab {
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    transition: all .18s ease;
+  }
+
+  .tab:hover { background: #f3f7fc; color: var(--text); }
+  .tab.active {
+    background: #ffffff;
+    color: var(--text);
+    box-shadow: 0 1px 2px rgba(16,24,40,0.08), 0 6px 18px rgba(16,24,40,0.06);
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .metric-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .metric {
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 16px 16px 14px;
+    box-shadow: var(--shadow);
+    min-height: 112px;
+  }
+
+  .metric-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0 0 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .metric-value {
+    font-size: 34px;
+    line-height: 1;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.04em;
+  }
+
+  .metric-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 10px 0 0;
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    padding: 18px 18px 16px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .card-sub {
+    margin: 5px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    margin: 2px 0 14px;
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--card-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 10px;
+  }
+
+  .ld {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    display: inline-block;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 320px;
+  }
+
+  .table-card { margin-top: 18px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    overflow: hidden;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 12px 12px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line-2);
+    font-weight: 700;
+    background: #fbfcfe;
+    position: sticky;
+    top: 0;
+  }
+
+  tbody td {
+    padding: 12px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+
+  tbody tr:hover { background: #fbfdff; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .table-wrap {
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .b-red { background: var(--orange-soft); color: #b25526; }
+  .b-grn { background: var(--green-soft); color: #197255; }
+  .b-blue { background: var(--blue-soft); color: #2c56c8; }
+  .b-gray { background: #eef2f6; color: #556070; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+    white-space: nowrap; border: 0;
+  }
+
+  @media (max-width: 1100px) {
+    .metric-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .metric-grid-3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .content-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 700px) {
+    .shell { padding: 18px 14px 24px; }
+    h1 { font-size: 24px; }
+    .metric-grid, .metric-grid-3 { grid-template-columns: 1fr; }
+    .tabs { display: flex; width: 100%; }
+    .tab { flex: 1; }
+    .chart-wrap { height: 280px; }
+    .card { padding: 16px 14px; }
+  }
+</style>
+</head>
+<body>
+<h2 class="sr-only">Combined dashboard: bugs from the Gantt tracker and Jira ticketing system by day from April 6 to April 14, 2026</h2>
+
+<div class="shell">
+  <section class="hero">
+    <div class="eyebrow">Production stability dashboard</div>
+    <h1>Combined Production Issues Dashboard</h1>
+    <p class="hero-sub">
+      Daily view of issues tracked in the Gantt sheet and Jira from April 6 to April 14, 2026.
+      The dashboard highlights incoming load, resolution pace, and the contrast between raw issue logging and ticket-based tracking.
+    </p>
+  </section>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('gantt')">Gantt tracker</button>
+    <button class="tab" onclick="switchTab('jira')">Jira ticketing</button>
+    <button class="tab" onclick="switchTab('combined')">Comparison</button>
+  </div>
+
+  <div id="panel-gantt" class="panel active">
+    <div class="metric-grid">
+      <div class="metric"><p class="metric-label">Total records</p><p class="metric-value">179</p><p class="metric-sub">As of April 14 · started from 21 on April 6</p></div>
+      <div class="metric"><p class="metric-label">Done</p><p class="metric-value">116</p><p class="metric-sub">65% of all tracked items</p></div>
+      <div class="metric"><p class="metric-label">Open workload</p><p class="metric-value">52</p><p class="metric-sub">41 To Do + 11 In Progress</p></div>
+      <div class="metric"><p class="metric-label">On Hold</p><p class="metric-value">9</p><p class="metric-sub">Blocked or pending external action</p></div>
+    </div>
+
+    <div class="content-grid">
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">New vs Done by day</h3>
+            <p class="card-sub">Daily inflow, daily closure pace, and cumulative volume in the tracker.</p>
+          </div>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="ld" style="background: var(--orange);"></span>New</span>
+          <span class="legend-item"><span class="ld" style="background: var(--green);"></span>Done per day</span>
+          <span class="legend-item"><span class="ld" style="background: var(--blue);"></span>Cumulative</span>
+        </div>
+        <div class="chart-wrap"><canvas id="g1" role="img" aria-label="Gantt: new bugs and Done by day"></canvas></div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Current status snapshot</h3>
+            <p class="card-sub">End-state distribution visible in the tracker on April 14.</p>
+          </div>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="ld" style="background: var(--green);"></span>Done</span>
+          <span class="legend-item"><span class="ld" style="background: var(--orange);"></span>To Do</span>
+          <span class="legend-item"><span class="ld" style="background: var(--blue);"></span>In Progress</span>
+          <span class="legend-item"><span class="ld" style="background: #9aa4b2;"></span>On Hold</span>
+        </div>
+        <div class="chart-wrap"><canvas id="gStatus" role="img" aria-label="Gantt status distribution"></canvas></div>
+      </section>
+    </div>
+
+    <section class="card table-card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Daily Gantt view</h3>
+          <p class="card-sub">Day-by-day change in total volume and movement into Done.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Total</th><th>New</th><th>Done per day</th><th>Total Done</th><th>To Do</th><th>In Progress</th><th>On Hold</th></tr></thead>
+          <tbody>
+            <tr><td>06.04</td><td>21</td><td><span class="badge b-gray">start</span></td><td>—</td><td>5</td><td>12</td><td>3</td><td>1</td></tr>
+            <tr><td>07.04</td><td>64</td><td><span class="badge b-red">+43</span></td><td><span class="badge b-grn">+26</span></td><td>31</td><td>26</td><td>1</td><td>6</td></tr>
+            <tr><td>08.04</td><td>103</td><td><span class="badge b-red">+39</span></td><td><span class="badge b-grn">+26</span></td><td>57</td><td>34</td><td>5</td><td>7</td></tr>
+            <tr><td>09.04</td><td>142</td><td><span class="badge b-red">+39</span></td><td><span class="badge b-grn">+14</span></td><td>71</td><td>52</td><td>12</td><td>7</td></tr>
+            <tr><td>10.04</td><td>150</td><td><span class="badge b-red">+8</span></td><td><span class="badge b-grn">+28</span></td><td>99</td><td>33</td><td>11</td><td>7</td></tr>
+            <tr><td>13.04</td><td>164</td><td><span class="badge b-red">+14</span></td><td><span class="badge b-grn">+7</span></td><td>106</td><td>37</td><td>13</td><td>8</td></tr>
+            <tr><td>14.04</td><td>179</td><td><span class="badge b-red">+15</span></td><td><span class="badge b-grn">+10</span></td><td>116</td><td>41</td><td>11</td><td>9</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div id="panel-jira" class="panel">
+    <div class="metric-grid">
+      <div class="metric"><p class="metric-label">Total tickets</p><p class="metric-value">120</p><p class="metric-sub">Created from April 6 to April 14</p></div>
+      <div class="metric"><p class="metric-label">Bug tickets</p><p class="metric-value">95</p><p class="metric-sub">79% of all Jira tickets</p></div>
+      <div class="metric"><p class="metric-label">Resolved</p><p class="metric-value">83</p><p class="metric-sub">69% of all Jira tickets</p></div>
+      <div class="metric"><p class="metric-label">Still active</p><p class="metric-value">21</p><p class="metric-sub">In progress / under analysis · Rejected: 8</p></div>
+    </div>
+
+    <div class="content-grid">
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">New tickets by type</h3>
+            <p class="card-sub">The composition of incoming Jira demand by day.</p>
+          </div>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="ld" style="background: var(--orange);"></span>Bugs</span>
+          <span class="legend-item"><span class="ld" style="background: var(--blue);"></span>Get access</span>
+          <span class="legend-item"><span class="ld" style="background: var(--green);"></span>Improvements</span>
+          <span class="legend-item"><span class="ld" style="background: var(--yellow);"></span>DB / other</span>
+        </div>
+        <div class="chart-wrap"><canvas id="j1" role="img" aria-label="Jira: tickets by type and day"></canvas></div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Bugs opened vs resolved</h3>
+            <p class="card-sub">Direct look at bug intake and resolution pace in Jira.</p>
+          </div>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="ld" style="background: var(--orange);"></span>Opened</span>
+          <span class="legend-item"><span class="ld" style="background: var(--green);"></span>Resolved</span>
+        </div>
+        <div class="chart-wrap"><canvas id="j2" role="img" aria-label="Jira bugs: opened vs resolved"></canvas></div>
+      </section>
+    </div>
+
+    <section class="card table-card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Daily Jira view</h3>
+          <p class="card-sub">Ticket mix and daily resolved count across all Jira items.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Bugs</th><th>Get access</th><th>Improvements</th><th>DB / other</th><th>Total</th><th>Resolved</th></tr></thead>
+          <tbody>
+            <tr><td>06.04</td><td>20</td><td>8</td><td>1</td><td>0</td><td>29</td><td><span class="badge b-grn">7</span></td></tr>
+            <tr><td>07.04</td><td>21</td><td>5</td><td>1</td><td>1</td><td>28</td><td><span class="badge b-grn">17</span></td></tr>
+            <tr><td>08.04</td><td>19</td><td>1</td><td>2</td><td>0</td><td>22</td><td><span class="badge b-grn">13</span></td></tr>
+            <tr><td>09.04</td><td>4</td><td>2</td><td>0</td><td>0</td><td>6</td><td><span class="badge b-grn">13</span></td></tr>
+            <tr><td>10.04</td><td>13</td><td>1</td><td>0</td><td>0</td><td>14</td><td><span class="badge b-grn">16</span></td></tr>
+            <tr><td>13.04</td><td>8</td><td>2</td><td>0</td><td>1</td><td>11</td><td><span class="badge b-grn">12</span></td></tr>
+            <tr><td>14.04</td><td>10</td><td>0</td><td>0</td><td>0</td><td>10</td><td><span class="badge b-grn">13</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div id="panel-combined" class="panel">
+    <div class="metric-grid-3">
+      <div class="metric"><p class="metric-label">Gantt records</p><p class="metric-value">179</p><p class="metric-sub">65% marked Done</p></div>
+      <div class="metric"><p class="metric-label">Jira tickets</p><p class="metric-value">120</p><p class="metric-sub">69% marked Done</p></div>
+      <div class="metric"><p class="metric-label">Jira bugs</p><p class="metric-value">95</p><p class="metric-sub">72% Done within bug subset</p></div>
+    </div>
+
+    <div class="content-grid">
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">New bugs by day</h3>
+            <p class="card-sub">Side-by-side comparison of newly logged bugs in the tracker and Jira.</p>
+          </div>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="ld" style="background: var(--orange);"></span>Gantt new</span>
+          <span class="legend-item"><span class="ld" style="background: var(--blue);"></span>Jira bug tickets</span>
+        </div>
+        <div class="chart-wrap"><canvas id="c1" role="img" aria-label="Comparison of new bugs: Gantt vs Jira by day"></canvas></div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Daily closure pace</h3>
+            <p class="card-sub">Done in the tracker versus resolved volume in Jira.</p>
+          </div>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="ld" style="background: var(--green);"></span>Gantt Done</span>
+          <span class="legend-item"><span class="ld" style="background: var(--teal);"></span>Jira resolved</span>
+        </div>
+        <div class="chart-wrap"><canvas id="c2" role="img" aria-label="Comparison of Done/Resolved: Gantt vs Jira"></canvas></div>
+      </section>
+    </div>
+
+    <section class="card table-card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Summary comparison</h3>
+          <p class="card-sub">A compact day-level view across both sources.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Gantt new</th><th>Gantt Done</th>
+              <th>Jira bugs new</th><th>Jira resolved</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>06.04</td><td><span class="badge b-gray">start 21</span></td><td>—</td><td>20</td><td>7</td></tr>
+            <tr><td>07.04</td><td><span class="badge b-red">+43</span></td><td><span class="badge b-grn">+26</span></td><td>21</td><td>17</td></tr>
+            <tr><td>08.04</td><td><span class="badge b-red">+39</span></td><td><span class="badge b-grn">+26</span></td><td>19</td><td>13</td></tr>
+            <tr><td>09.04</td><td><span class="badge b-red">+39</span></td><td><span class="badge b-grn">+14</span></td><td>4</td><td>13</td></tr>
+            <tr><td>10.04</td><td><span class="badge b-red">+8</span></td><td><span class="badge b-grn">+28</span></td><td>13</td><td>16</td></tr>
+            <tr><td>13.04</td><td><span class="badge b-red">+14</span></td><td><span class="badge b-grn">+7</span></td><td>8</td><td>12</td></tr>
+            <tr><td>14.04</td><td><span class="badge b-red">+15</span></td><td><span class="badge b-grn">+10</span></td><td>10</td><td>13</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    const ids = ['gantt', 'jira', 'combined'];
+    t.classList.toggle('active', ids[i] === id);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+}
+
+const days = ['06.04','07.04','08.04','09.04','10.04','13.04','14.04'];
+
+Chart.defaults.font.family = "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+Chart.defaults.color = '#667085';
+Chart.defaults.borderColor = 'rgba(22,32,51,0.08)';
+
+const commonBarOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  interaction: { mode: 'index', intersect: false },
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: 'rgba(18, 24, 38, 0.92)',
+      titleColor: '#fff',
+      bodyColor: '#e9eef8',
+      padding: 12,
+      cornerRadius: 10,
+      displayColors: true
+    }
+  },
+  scales: {
+    x: {
+      grid: { display: false, drawBorder: false },
+      ticks: { color: '#667085', font: { size: 11, weight: 600 }, autoSkip: false }
+    },
+    y: {
+      beginAtZero: true,
+      grid: { color: 'rgba(22,32,51,0.08)', drawBorder: false },
+      ticks: { color: '#667085', font: { size: 11 } }
+    }
+  }
+};
+
+new Chart(document.getElementById('g1'), {
+  type: 'bar',
+  data: {
+    labels: days,
+    datasets: [
+      {
+        label: 'New',
+        data: [0,43,39,39,8,14,15],
+        backgroundColor: 'rgba(242,139,84,0.88)',
+        borderRadius: 8,
+        borderSkipped: false,
+        barThickness: 20,
+        order: 2
+      },
+      {
+        label: 'Done',
+        data: [0,26,26,14,28,7,10],
+        backgroundColor: 'rgba(44,168,127,0.88)',
+        borderRadius: 8,
+        borderSkipped: false,
+        barThickness: 20,
+        order: 2
+      },
+      {
+        label: 'Cumulative',
+        data: [21,64,103,142,150,164,179],
+        type: 'line',
+        borderColor: '#4a7dff',
+        backgroundColor: '#4a7dff',
+        pointRadius: 3,
+        pointHoverRadius: 4,
+        pointBorderWidth: 0,
+        tension: 0.36,
+        yAxisID: 'y1',
+        order: 1
+      }
+    ]
+  },
+  options: {
+    ...commonBarOptions,
+    scales: {
+      x: commonBarOptions.scales.x,
+      y: {
+        ...commonBarOptions.scales.y,
+        position: 'left',
+        title: { display: true, text: 'Daily volume', color: '#667085', font: { size: 11, weight: 700 } }
+      },
+      y1: {
+        beginAtZero: true,
+        position: 'right',
+        grid: { drawOnChartArea: false, drawBorder: false },
+        ticks: { color: '#4a7dff', font: { size: 11, weight: 700 } },
+        title: { display: true, text: 'Cumulative', color: '#4a7dff', font: { size: 11, weight: 700 } }
+      }
+    }
+  }
+});
+
+new Chart(document.getElementById('gStatus'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Done', 'To Do', 'In Progress', 'On Hold'],
+    datasets: [{
+      data: [116, 41, 11, 9],
+      backgroundColor: ['#2ca87f', '#f28b54', '#4a7dff', '#9aa4b2'],
+      borderWidth: 0,
+      hoverOffset: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(18, 24, 38, 0.92)',
+        titleColor: '#fff',
+        bodyColor: '#e9eef8',
+        padding: 12,
+        cornerRadius: 10
+      }
+    }
+  }
+});
+
+new Chart(document.getElementById('j1'), {
+  type: 'bar',
+  data: {
+    labels: days,
+    datasets: [
+      { label: 'Bugs', data: [20,21,19,4,13,8,10], backgroundColor: '#f28b54', stack: 'stack', borderRadius: 8, borderSkipped: false },
+      { label: 'Get access', data: [8,5,1,2,1,2,0], backgroundColor: '#4a7dff', stack: 'stack', borderRadius: 8, borderSkipped: false },
+      { label: 'Improvements', data: [1,1,2,0,0,0,0], backgroundColor: '#2ca87f', stack: 'stack', borderRadius: 8, borderSkipped: false },
+      { label: 'DB / other', data: [0,1,0,0,0,1,0], backgroundColor: '#e3b341', stack: 'stack', borderRadius: 8, borderSkipped: false }
+    ]
+  },
+  options: {
+    ...commonBarOptions,
+    scales: {
+      x: { ...commonBarOptions.scales.x, stacked: true },
+      y: { ...commonBarOptions.scales.y, stacked: true }
+    }
+  }
+});
+
+new Chart(document.getElementById('j2'), {
+  type: 'bar',
+  data: {
+    labels: days,
+    datasets: [
+      { label: 'Opened', data: [20,21,19,4,13,8,10], backgroundColor: 'rgba(242,139,84,0.88)', borderRadius: 8, borderSkipped: false, barThickness: 24 },
+      { label: 'Resolved', data: [5,13,13,10,13,10,11], backgroundColor: 'rgba(44,168,127,0.88)', borderRadius: 8, borderSkipped: false, barThickness: 24 }
+    ]
+  },
+  options: commonBarOptions
+});
+
+new Chart(document.getElementById('c1'), {
+  type: 'bar',
+  data: {
+    labels: days,
+    datasets: [
+      { label: 'Gantt new', data: [21,43,39,39,8,14,15], backgroundColor: 'rgba(242,139,84,0.88)', borderRadius: 8, borderSkipped: false, barThickness: 24 },
+      { label: 'Jira bugs', data: [20,21,19,4,13,8,10], backgroundColor: 'rgba(74,125,255,0.88)', borderRadius: 8, borderSkipped: false, barThickness: 24 }
+    ]
+  },
+  options: commonBarOptions
+});
+
+new Chart(document.getElementById('c2'), {
+  type: 'bar',
+  data: {
+    labels: days,
+    datasets: [
+      { label: 'Gantt Done', data: [0,26,26,14,28,7,10], backgroundColor: 'rgba(44,168,127,0.88)', borderRadius: 8, borderSkipped: false, barThickness: 24 },
+      { label: 'Jira Resolved', data: [7,17,13,13,16,12,13], backgroundColor: 'rgba(43,179,192,0.88)', borderRadius: 8, borderSkipped: false, barThickness: 24 }
+    ]
+  },
+  options: commonBarOptions
+});
+</script>
+</body>
+</html>
