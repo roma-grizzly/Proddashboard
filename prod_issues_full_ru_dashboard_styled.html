@@ -1,0 +1,574 @@
+
+<h2 class="sr-only">Дашборд prod issues после релиза: статистика по дням, причины, задачи из Gantt и Jira — апрель 2026</h2>
+
+<style>
+:root{
+  --bg:#f6f8fb;
+  --card:#ffffff;
+  --card-2:#fbfdff;
+  --text:#162033;
+  --muted:#667085;
+  --line:#e7edf5;
+  --line-2:#d7e2ef;
+  --blue:#4a7dff;
+  --blue-soft:rgba(74,125,255,.14);
+  --green:#2ca87f;
+  --green-soft:rgba(44,168,127,.14);
+  --orange:#f28b54;
+  --orange-soft:rgba(242,139,84,.16);
+  --teal:#2bb3c0;
+  --teal-soft:rgba(43,179,192,.15);
+  --yellow:#e3b341;
+  --yellow-soft:rgba(227,179,65,.16);
+  --gray-soft:#eef2f6;
+  --shadow:0 10px 30px rgba(16,24,40,.06);
+  --radius-xl:20px;
+  --radius-lg:16px;
+  --radius-md:12px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at top right,#eef4ff 0,rgba(238,244,255,0) 28%),
+    radial-gradient(circle at top left,#effcf7 0,rgba(239,252,247,0) 24%),
+    var(--bg);
+  color:var(--text);
+  line-height:1.45;
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.shell{max-width:1360px;margin:0 auto;padding:28px 22px 36px}
+.hero{
+  background:linear-gradient(135deg,#ffffff 0%,#f7fbff 100%);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:24px 26px;
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 10px;border-radius:999px;
+  background:#eef4ff;color:#3658b3;
+  font-size:12px;font-weight:700;letter-spacing:.02em;
+  margin-bottom:10px;
+}
+.hero h1{font-size:30px;line-height:1.15;margin:0 0 8px;letter-spacing:-.03em}
+.hero p{font-size:14px;color:var(--muted);max-width:980px;margin:0}
+.tabs{
+  display:inline-flex;gap:8px;flex-wrap:wrap;
+  background:rgba(255,255,255,.7);
+  border:1px solid var(--line);
+  padding:6px;border-radius:14px;
+  margin:20px 0 22px;
+  backdrop-filter:blur(6px);
+}
+.tab{
+  padding:10px 14px;font-size:13px;font-weight:700;
+  cursor:pointer;border:0;border-radius:10px;
+  background:transparent;color:var(--muted);
+  transition:all .18s ease;white-space:nowrap;
+}
+.tab:hover{background:#f3f7fc;color:var(--text)}
+.tab.active{
+  background:#fff;color:var(--text);
+  box-shadow:0 1px 2px rgba(16,24,40,.08),0 6px 18px rgba(16,24,40,.06);
+}
+.panel{display:none}.panel.active{display:block}
+.mg,.mg3{display:grid;gap:14px;margin-bottom:22px}
+.mg{grid-template-columns:repeat(4,minmax(0,1fr))}
+.mg3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.m{
+  background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  padding:16px 16px 14px;
+  box-shadow:var(--shadow);
+  min-height:112px;
+}
+.ml{
+  font-size:12px;color:var(--muted);margin:0 0 10px;
+  font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+}
+.mv{font-size:34px;line-height:1;font-weight:800;margin:0;letter-spacing:-.04em}
+.ms{font-size:13px;color:var(--muted);margin:10px 0 0}
+.st{
+  font-size:12px;font-weight:800;color:var(--muted);
+  margin:18px 0 10px;text-transform:uppercase;letter-spacing:.08em
+}
+.leg{display:flex;gap:10px 14px;margin-bottom:14px;flex-wrap:wrap}
+.li{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12px;color:var(--muted);
+  background:var(--card-2);border:1px solid var(--line);
+  border-radius:999px;padding:6px 10px;
+}
+.ld{width:10px;height:10px;border-radius:999px;flex-shrink:0}
+.cw,.cw-sm{
+  position:relative;width:100%;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius-xl);
+  box-shadow:var(--shadow);
+  padding:16px;
+}
+.cw{height:360px;margin-bottom:18px}
+.cw-sm{height:310px;margin-bottom:18px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.tbl-wrap{
+  overflow-x:auto;max-height:520px;overflow-y:auto;
+  border:1px solid var(--line);border-radius:16px;
+  box-shadow:var(--shadow);background:#fff
+}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{position:sticky;top:0;background:#fbfcfe;z-index:2}
+th{
+  text-align:left;padding:12px;border-bottom:1px solid var(--line-2);
+  color:var(--muted);font-weight:700;white-space:nowrap;
+  cursor:pointer;user-select:none
+}
+th:hover{color:var(--text)}
+th .sort-icon{margin-left:4px;opacity:.45;font-size:10px}
+th.sorted .sort-icon{opacity:1}
+td{
+  padding:12px;border-bottom:1px solid var(--line);
+  color:var(--text);max-width:340px;vertical-align:middle
+}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fbfdff}
+.summary-cell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.b{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap
+}
+.br{background:var(--orange-soft);color:#b25526}
+.bg{background:var(--green-soft);color:#197255}
+.bb{background:var(--blue-soft);color:#2c56c8}
+.bgy{background:var(--gray-soft);color:#556070}
+.bpu{background:#eeedfe;color:#3c3489}
+.bam{background:#faeeda;color:#633806}
+.bpi{background:#fbeaf0;color:#4b1528}
+.filters{
+  display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center;
+  background:#fff;border:1px solid var(--line);
+  border-radius:16px;padding:14px;box-shadow:var(--shadow)
+}
+.filters select,.filters input{
+  padding:8px 10px;font-size:13px;border:1px solid var(--line-2);
+  border-radius:12px;background:#fff;color:var(--text);min-height:38px;
+  outline:none;transition:border-color .15s ease, box-shadow .15s ease
+}
+.filters input{min-width:240px}
+.filters select:focus,.filters input:focus{
+  border-color:#b6ccff;box-shadow:0 0 0 4px rgba(74,125,255,.10)
+}
+.count-info{font-size:12px;color:var(--muted);margin:2px 0 10px}
+@media (max-width:1100px){
+  .mg{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mg3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .two-col{grid-template-columns:1fr}
+}
+@media (max-width:700px){
+  .shell{padding:18px 14px 24px}
+  .hero h1{font-size:24px}
+  .mg,.mg3{grid-template-columns:1fr}
+  .tabs{display:flex;width:100%}
+  .tab{flex:1}
+  .cw{height:320px}
+  .cw-sm{height:280px}
+  .filters input{min-width:100%}
+}
+</style>
+
+
+<div class="shell">
+  <section class="hero">
+    <div class="eyebrow">Production stability dashboard</div>
+    <h1>Prod issues after release</h1>
+    <p>Статистика по дням, причины, Gantt и Jira-задачи за апрель 2026. Визуальный слой обновлён для более удобного чтения и обсуждения с менеджментом и командой.</p>
+  </section>
+<div>
+<div class="tabs">
+  <button class="tab active" onclick="sw('stat')">📊 Статистика</button>
+  <button class="tab" onclick="sw('jirastat')">🎫 Jira: аналитика</button>
+  <button class="tab" onclick="sw('reasons')">🔍 Причины</button>
+  <button class="tab" onclick="sw('ganttlist')">📋 Задачи Gantt</button>
+  <button class="tab" onclick="sw('jiralist')">🐛 Задачи Jira</button>
+  <button class="tab" onclick="sw('reasonlist')">📌 По причинам</button>
+</div>
+
+<!-- СТАТИСТИКА -->
+<div id="panel-stat" class="panel active">
+  <div class="mg">
+    <div class="m"><p class="ml">Всего записей (14.04)</p><p class="mv">179</p><p class="ms">Старт: 21 (06.04)</p></div>
+    <div class="m"><p class="ml">Выполнено (Done)</p><p class="mv">116</p><p class="ms">65% от общего</p></div>
+    <div class="m"><p class="ml">To Do + In Progress</p><p class="mv">52</p><p class="ms">в работе</p></div>
+    <div class="m"><p class="ml">On Hold</p><p class="mv">9</p><p class="ms">заблокировано</p></div>
+  </div>
+  <p class="st">Новые баги vs Done по дням</p>
+  <div class="leg">
+    <span class="li"><span class="ld" style="background:rgba(242,139,84,0.88);"></span>Новых за день</span>
+    <span class="li"><span class="ld" style="background:rgba(44,168,127,0.88);"></span>Done за день</span>
+    <span class="li"><span class="ld" style="background:#4a7dff;height:2px;border-radius:0;"></span>Накопленно</span>
+  </div>
+  <div class="cw"><canvas id="g1" role="img" aria-label="Новые баги и Done по дням"></canvas></div>
+  <p class="st">По дням</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Дата</th><th>Всего</th><th>Новых</th><th>Done↑</th><th>Всего Done</th><th>To Do</th><th>In Progress</th><th>On Hold</th></tr></thead>
+    <tbody>
+      <tr><td>06.04</td><td>21</td><td><span class="b bgy">старт</span></td><td>—</td><td>5</td><td>12</td><td>3</td><td>1</td></tr>
+      <tr><td>07.04</td><td>64</td><td><span class="b br">+43</span></td><td><span class="b bg">+26</span></td><td>31</td><td>26</td><td>1</td><td>6</td></tr>
+      <tr><td>08.04</td><td>103</td><td><span class="b br">+39</span></td><td><span class="b bg">+26</span></td><td>57</td><td>34</td><td>5</td><td>7</td></tr>
+      <tr><td>09.04</td><td>142</td><td><span class="b br">+39</span></td><td><span class="b bg">+14</span></td><td>71</td><td>52</td><td>12</td><td>7</td></tr>
+      <tr><td>10.04</td><td>150</td><td><span class="b br">+8</span></td><td><span class="b bg">+28</span></td><td>99</td><td>33</td><td>11</td><td>7</td></tr>
+      <tr><td>13.04</td><td>164</td><td><span class="b br">+14</span></td><td><span class="b bg">+7</span></td><td>106</td><td>37</td><td>13</td><td>8</td></tr>
+      <tr><td>14.04</td><td>179</td><td><span class="b br">+15</span></td><td><span class="b bg">+10</span></td><td>116</td><td>41</td><td>11</td><td>9</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- JIRA АНАЛИТИКА -->
+<div id="panel-jirastat" class="panel">
+  <div class="mg">
+    <div class="m"><p class="ml">Всего тикетов</p><p class="mv">120</p><p class="ms">6–14 апреля</p></div>
+    <div class="m"><p class="ml">Баги (Bugs)</p><p class="mv">95</p><p class="ms">79% от всех</p></div>
+    <div class="m"><p class="ml">Решено (Done)</p><p class="mv">83</p><p class="ms">69% от всех</p></div>
+    <div class="m"><p class="ml">В работе / анализе</p><p class="mv">21</p><p class="ms">Rejected: 8</p></div>
+  </div>
+  <p class="st">Новые тикеты по типам по дням</p>
+  <div class="leg">
+    <span class="li"><span class="ld" style="background:rgba(242,139,84,0.88);"></span>Баги</span>
+    <span class="li"><span class="ld" style="background:rgba(74,125,255,0.88);"></span>Доступ</span>
+    <span class="li"><span class="ld" style="background:rgba(44,168,127,0.88);"></span>Улучшения</span>
+    <span class="li"><span class="ld" style="background:rgba(227,179,65,0.88);"></span>БД/прочее</span>
+  </div>
+  <div class="cw"><canvas id="j1" role="img" aria-label="Тикеты по типам и дням"></canvas></div>
+  <div class="two-col">
+    <div>
+      <p class="st">Баги: открыто vs решено</p>
+      <div class="cw-sm"><canvas id="j2" role="img" aria-label="Открыто vs решено"></canvas></div>
+    </div>
+    <div>
+      <p class="st">Сравнение: Gantt vs Jira</p>
+      <div class="cw-sm"><canvas id="c1" role="img" aria-label="Gantt vs Jira новых багов"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ПРИЧИНЫ -->
+<div id="panel-reasons" class="panel">
+  <div class="mg3">
+    <div class="m"><p class="ml">С причиной (из 179)</p><p class="mv">141</p><p class="ms">79% имеют причину</p></div>
+    <div class="m"><p class="ml">Без причины</p><p class="mv">38</p><p class="ms">в основном новые 14.04</p></div>
+    <div class="m"><p class="ml">Данные по причинам с</p><p class="mv">13.04</p><p class="ms">колонка добавлена позже</p></div>
+  </div>
+  <p class="st">Распределение причин (на 14.04)</p>
+  <div class="cw"><canvas id="r1" role="img" aria-label="Причины багов"></canvas></div>
+  <div class="two-col">
+    <div>
+      <p class="st">Причины → статус</p>
+      <div class="cw-sm"><canvas id="r2" role="img" aria-label="Причины по статусу"></canvas></div>
+    </div>
+    <div>
+      <p class="st">Причины → product area</p>
+      <div class="cw-sm"><canvas id="r3" role="img" aria-label="Причины по area"></canvas></div>
+    </div>
+  </div>
+  <p class="st">Изменение 13.04 → 14.04</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Причина</th><th>13.04</th><th>14.04</th><th>Δ</th><th>Done</th><th>In Prog.</th><th>To Do</th><th>On Hold</th></tr></thead>
+    <tbody>
+      <tr><td>Unexpected requirements</td><td>35</td><td>37</td><td><span class="b br">+2</span></td><td>28</td><td>3</td><td>4</td><td>2</td></tr>
+      <tr><td>Bug - Code issue</td><td>25</td><td>30</td><td><span class="b br">+5</span></td><td>22</td><td>4</td><td>4</td><td>0</td></tr>
+      <tr><td>Permission issue</td><td>25</td><td>27</td><td><span class="b br">+2</span></td><td>25</td><td>0</td><td>1</td><td>1</td></tr>
+      <tr><td>Other</td><td>15</td><td>19</td><td><span class="b br">+4</span></td><td>12</td><td>1</td><td>2</td><td>3</td></tr>
+      <tr><td>RTFM</td><td>10</td><td>11</td><td><span class="b br">+1</span></td><td>10</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>Bug - Migration issue</td><td>8</td><td>8</td><td><span class="b bgy">0</span></td><td>7</td><td>0</td><td>0</td><td>1</td></tr>
+      <tr><td>CRM DB issue</td><td>5</td><td>5</td><td><span class="b bgy">0</span></td><td>5</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>AirFlow</td><td>4</td><td>4</td><td><span class="b bgy">0</span></td><td>1</td><td>2</td><td>1</td><td>0</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ЗАДАЧИ GANTT -->
+<div id="panel-ganttlist" class="panel">
+  <div class="filters">
+    <input type="text" id="gSearch" placeholder="🔍 Поиск по названию..." oninput="renderGantt()">
+    <select id="gStatus" onchange="renderGantt()"><option value="">Все статусы</option><option>Done</option><option>To Do</option><option>In Progress</option><option>on hold</option><option>--</option></select>
+    <select id="gArea" onchange="renderGantt()"><option value="">Все области</option><option>Staffing</option><option>Sales</option><option>DM/PM</option><option>CV</option><option>Pre-Sale DM</option></select>
+    <select id="gReason" onchange="renderGantt()"><option value="">Все причины</option><option>Bug - Code issue</option><option>Bug - Migration issue</option><option>Unexpected requirements</option><option>Permission issue</option><option>RTFM</option><option>Other</option><option>AirFlow</option><option>CRM DB issue</option></select>
+    <select id="gPriority" onchange="renderGantt()"><option value="">Все приоритеты</option><option>Blocker</option><option>High</option><option>Medium</option><option>Low</option></select>
+  </div>
+  <div class="count-info" id="gCount"></div>
+  <div class="tbl-wrap">
+  <table id="gTable">
+    <thead><tr>
+      <th onclick="sortGantt('id')">№ <span class="sort-icon">↕</span></th>
+      <th onclick="sortGantt('area')">Область <span class="sort-icon">↕</span></th>
+      <th>Название</th>
+      <th onclick="sortGantt('priority')">Приоритет <span class="sort-icon">↕</span></th>
+      <th onclick="sortGantt('status')">Статус <span class="sort-icon">↕</span></th>
+      <th onclick="sortGantt('reason')">Причина <span class="sort-icon">↕</span></th>
+      <th>Исполнитель</th>
+      <th>Jira</th>
+    </tr></thead>
+    <tbody id="gBody"></tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ЗАДАЧИ JIRA -->
+<div id="panel-jiralist" class="panel">
+  <div class="filters">
+    <input type="text" id="jSearch" placeholder="🔍 Поиск..." oninput="renderJira()">
+    <select id="jStatus" onchange="renderJira()"><option value="">Все статусы</option><option>Done</option><option>Analysis</option><option>In Progress</option><option>New</option><option>Rejected</option><option>Validation</option><option>Waiting for approval</option></select>
+    <select id="jType" onchange="renderJira()"><option value="">Все типы</option><option>Bugs</option><option>Get access to Internal Projects</option><option>Improvements</option><option>Working with Database</option></select>
+    <select id="jDate" onchange="renderJira()"><option value="">Все даты</option><option>06.04.2026</option><option>07.04.2026</option><option>08.04.2026</option><option>09.04.2026</option><option>10.04.2026</option><option>13.04.2026</option><option>14.04.2026</option></select>
+  </div>
+  <div class="count-info" id="jCount"></div>
+  <div class="tbl-wrap">
+  <table id="jTable">
+    <thead><tr>
+      <th onclick="sortJira('key')">Ключ <span class="sort-icon">↕</span></th>
+      <th onclick="sortJira('type')">Тип <span class="sort-icon">↕</span></th>
+      <th>Название</th>
+      <th onclick="sortJira('status')">Статус <span class="sort-icon">↕</span></th>
+      <th onclick="sortJira('created')">Создан <span class="sort-icon">↕</span></th>
+      <th onclick="sortJira('resolved')">Решён <span class="sort-icon">↕</span></th>
+      <th>Репортер</th>
+    </tr></thead>
+    <tbody id="jBody"></tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ПО ПРИЧИНАМ -->
+<div id="panel-reasonlist" class="panel">
+  <div class="filters">
+    <select id="rReason" onchange="renderReasons()">
+      <option value="">Все причины</option>
+      <option>Unexpected requirements</option>
+      <option>Bug - Code issue</option>
+      <option>Permission issue</option>
+      <option>Other</option>
+      <option>RTFM</option>
+      <option>Bug - Migration issue</option>
+      <option>CRM DB issue</option>
+      <option>AirFlow</option>
+    </select>
+    <select id="rStatus" onchange="renderReasons()"><option value="">Все статусы</option><option>Done</option><option>To Do</option><option>In Progress</option><option>on hold</option></select>
+    <select id="rArea" onchange="renderReasons()"><option value="">Все области</option><option>Staffing</option><option>Sales</option><option>DM/PM</option><option>CV</option><option>Pre-Sale DM</option></select>
+  </div>
+  <div class="count-info" id="rCount"></div>
+  <div class="tbl-wrap">
+  <table id="rTable">
+    <thead><tr>
+      <th onclick="sortReasons('reason')">Причина <span class="sort-icon">↕</span></th>
+      <th onclick="sortReasons('area')">Область <span class="sort-icon">↕</span></th>
+      <th>Название</th>
+      <th onclick="sortReasons('status')">Статус <span class="sort-icon">↕</span></th>
+      <th onclick="sortReasons('priority')">Приоритет <span class="sort-icon">↕</span></th>
+      <th>Исполнитель</th>
+    </tr></thead>
+    <tbody id="rBody"></tbody>
+  </table>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</div>
+<script>
+// ---- DATA ----
+const GANTT = [{"id":"1.0","area":"DM/PM","summary":"Отображение демандов","priority":"Blocker","status":"Done","assignee":"Klimava Veranika","reason":"Bug - Migration issue","comments":"Проблема из миграции, данные о ПМах и ДМах не дошли в деманды. Перезапустить миграцию и далее скрипт. \n","jira":""},{"id":"2.0","area":"Sales","summary":"RFP are empty","priority":"High","status":"Done","assignee":"-","reason":"RTFM","comments":"Не читали юзер гайд, не знают про разные list view","jira":""},{"id":"3.0","area":"Sales","summary":"Accounts are empty","priority":"High","status":"Done","assignee":"-","reason":"RTFM","comments":"Не читали юзер гайд, не знают про разные list view","jira":""},{"id":"4.0","area":"Staffing","summary":"не работает отображение кандидатов в таблице демандов","priority":"Blocker","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Other","comments":"Скорее всего связано с задачей 1 - перепроверить после задачи 1","jira":""},{"id":"5.0","area":"Staffing","summary":"CV send date пусто","priority":"High","status":"Done","assignee":"Klimava Veranika","reason":"Bug - Migration issue","comments":"есть, не везде, но есть","jira":""},{"id":"6.0","area":"Staffing","summary":"Int coop type пусто","priority":"High","status":"Done","assignee":"Dzmitry Bakovich","reason":"Bug - Code issue","comments":"это колонка в таблице демандов, там прочерки.","jira":""},{"id":"7.0","area":"Staffing","summary":"пусто Readiness for interview, preparations","priority":"Medium","status":"To Do","assignee":"Dzmitry Bakovich","reason":"","comments":"и миграцию посмотреть и сф","jira":"ASF-2719"},{"id":"8.0","area":"Staffing","summary":"при обновлении страницы слетает сохраненный темплейт","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"не миграция","jira":""},{"id":"9.0","area":"Staffing","summary":"Локейшн/экспет локейшен - пусто","priority":"High","status":"Done","assignee":"Klimava Veranika","reason":"Bug - Migration issue","comments":"у нас если не заполяются локации, система должна автоматически проставлять значение All. Надо в сф дополнять. пусто = глобал (не косяк миграци).\nПоправлены миграционные записи, пока текущие сф не трогала, вопрос к функционалу. Смогу обновить 8.04.26 если надо (быстро)","jira":""},{"id":"10.0","area":"Staffing","summary":"При распределении кандидата в таблице не появилась ни first proposed date ни distribnutiion date","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Other","comments":"не миграция","jira":""},{"id":"11.0","area":"Staffing","summary":"При проставлении некст степа CV sent - не появляется дата в таблице","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"Bug - Code issue","comments":"не миграция","jira":""},{"id":"12.0","area":"Staffing","summary":"- В архиве кандидата все еще не вижу не причины снятия, ни автора кто снял, ни комментов","priority":"High","status":"on hold","assignee":"-","reason":"","comments":"не миграция","jira":""},{"id":"13.0","area":"Sales","summary":"Не проставлена локаль","priority":"Low","status":"Done","assignee":"Klimava Veranika","reason":"Permission issue","comments":"Видят польский язык иногда. ","jira":""},{"id":"14.0","area":"Sales","summary":"Проставление ролей сейлзов с учётом иерархии и регионов","priority":"Blocker","status":"Done","assignee":"Siarhei Klimkouski","reason":"Permission issue","comments":"скоро решим","jira":""},{"id":"15.0","area":"Sales","summary":"Дашборды для сейлзов","priority":"Medium","status":"on hold","assignee":"Ilya Drazdou","reason":"Unexpected requirements","comments":"Сдедали 5/6 на проде, с одним проблема, нужно апдейт требований и 8 часов, сделаем позже(не факт что физибл)","jira":""},{"id":"16.0","area":"DM/PM","summary":"При переводе деманди из драфт в опен просит по новой вводить все данные","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"Bug - Code issue","comments":"Деманд после повторного ввода данных переносит в open","jira":""},{"id":"17.0","area":"DM/PM","summary":"Добавить отображение таблицы демандов","priority":"Low","status":"To Do","assignee":"-","reason":"","comments":"Можно сделать лист вью со всеми демандами. Отсутствие функционала не критично","jira":"ASF-2708"},{"id":"18.0","area":"Sales","summary":"sales coordinator не может поменять pm на проекте до отправки в 1с","priority":"Medium","status":"Done","assignee":"Dzmitry Bakovich","reason":"","comments":"","jira":""},{"id":"19.0","area":"DM/PM","summary":"Не видны внутренние проекты в SF","priority":"Medium","status":"In Progress","assignee":"Klimava Veranika","reason":"Unexpected requirements","comments":"Их не забрали из CRM, т.к. нет продажи. Нужен фикс на уровне миграции.","jira":"ASF-2720"},{"id":"20.0","area":"Staffing","summary":"Перенос и настройка роли для Поповой на платформ лцензию","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"21.0","area":"Sales","summary":"Проблемы с переводом контактов по статусам","priority":"High","status":"Done","assignee":"Siarhei Klimkouski","reason":"Bug - Code issue","comments":"Отдано в ретест","jira":""},{"id":"22.0","area":"Sales","summary":"emails still don't get reflected in SF","priority":"High","status":"Done","assignee":"Siarhei Klimkouski","reason":"RTFM","comments":"","jira":""},{"id":"23.0","area":"Sales","summary":"Проблема с доступом к РФП","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"24.0","area":"Staffing","summary":"Проблема с доступом к саплай","priority":"Blocker","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"25.0","area":"DM/PM","summary":"Видит свой ROL","priority":"Medium","status":"Done","assignee":"Vasili Vialichka","reason":"Permission issue","comments":"","jira":""},{"id":"26.0","area":"CV","summary":"Не отображается список CV request в dashboard","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"Other","comments":"Не воспроизводится","jira":""},{"id":"27.0","area":"CV","summary":"Не позволяет выбрать проект в момент создания запроса на CV","priority":"Blocker","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"28.0","area":"Staffing","summary":"нету на карточке supply ссылки на asstafing","priority":"High","status":"Done","assignee":"Palina Skvartsova","reason":"Bug - Code issue","comments":"","jira":""},{"id":"29.0","area":"CV","summary":"поле cv deadline не обязательное, а должно им быть","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"30.0","area":"Sales","summary":"I moved the activities and they are now in the calendar, BUT they have not been transferred to the LEADS","priority":"Medium","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2721"},{"id":"31.0","area":"Staffing","summary":"Проблемы с доступом у Поповой к таблице деманда и к отчетам","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"32.0","area":"Staffing","summary":"Не работает кнопка вызова калькуляторов","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"Permission issue","comments":"","jira":""},{"id":"33.0","area":"DM/PM","summary":"Создать доступ для нового PC","priority":"Medium","status":"Done","assignee":"Vasili Vialichka","reason":"Unexpected requirements","comments":"","jira":""},{"id":"34.0","area":"Sales","summary":"Сейлзы не видят свои аккаунты из CRM","priority":"High","status":"Done","assignee":"Klimava Veranika","reason":"CRM DB issue","comments":"","jira":""},{"id":"35.0","area":"Sales","summary":"Отображение активностей (календаря) в мобилке","priority":"Low","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2709"},{"id":"36.0","area":"Sales","summary":"Не могут создать проект через кнопку 'New' сейлз координатор","priority":"High","status":"on hold","assignee":"Siarhei Klimkouski","reason":"Unexpected requirements","comments":"","jira":""},{"id":"37.0","area":"DM/PM","summary":"Синк проектов с 1С","priority":"High","status":"Done","assignee":"Dzmitry Bakovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"38.0","area":"Staffing","summary":"Не открывается красная вакансия в деманде","priority":"Blocker","status":"Done","assignee":"Klimava Veranika","reason":"Bug - Migration issue","comments":"","jira":""},{"id":"39.0","area":"Staffing","summary":"Нет Devops в фильтрах по департаменту в деманд таблице","priority":"Medium","status":"To Do","assignee":"Yuliya Trukhanovich","reason":"RTFM","comments":"","jira":""},{"id":"40.0","area":"Sales","summary":"Sales не видит свои активности","priority":"Medium","status":"Done","assignee":"Klimava Veranika","reason":"Bug - Migration issue","comments":"","jira":""},{"id":"41.0","area":"--","summary":"Дать доступ read к полям CRM_External_Id__c and Historical_Information_from_Andersen_CRM__c","priority":"Medium","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2722"},{"id":"42.0","area":"Staffing","summary":"Перевод кандидатов по статусам не работает","priority":"Blocker","status":"Done","assignee":"Dzmitry Bakovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"43.0","area":"Staffing","summary":"Не получается распределить кандидата на деманд","priority":"Blocker","status":"Done","assignee":"Dzmitry Bakovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"44.0","area":"Staffing","summary":"сапплай в разнобой показывает простои сотрудников на бенче","priority":"Medium","status":"Done","assignee":"Palina Skvartsova","reason":"Bug - Code issue","comments":"","jira":""},{"id":"45.0","area":"CV","summary":"пользователи не могу создать запрос на кандидата","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"Permission issue","comments":"","jira":""},{"id":"46.0","area":"Sales","summary":"Фикс проблемы со статусами на оппортьюнити","priority":"Low","status":"on hold","assignee":"Klimava Veranika","reason":"Bug - Migration issue","comments":"","jira":""},{"id":"47.0","area":"Staffing","summary":"Трансфер кандидата на другой деманд","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"48.0","area":"Sales","summary":"Настроить автодистрибуцию","priority":"Medium","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2723"},{"id":"49.0","area":"DM/PM","summary":"При клоне деманда не проставляются PM/DM/SDM","priority":"Low","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"50.0","area":"Sales","summary":"Error when moving the deal from Closed Won to Archived Won","priority":"High","status":"Done","assignee":"Palina Skvartsova","reason":"Other","comments":"","jira":""},{"id":"51.0","area":"Staffing","summary":"при смене некс степа на кандидате в деманде, дата не меняется","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"Bug - Code issue","comments":"","jira":""},{"id":"52.0","area":"DM/PM","summary":"PM/DM/PC должны видеть ROL кандидатов","priority":"Low","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2710"},{"id":"53.0","area":"Sales","summary":"Расхождение в получаемых лидах","priority":"Blocker","status":"Done","assignee":"Dzmitry Bakovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"54.0","area":"Staffing","summary":"на карточке supply можно менять статус и имя","priority":"High","status":"Done","assignee":"Palina Skvartsova","reason":"Other","comments":"","jira":""},{"id":"55.0","area":"Staffing","summary":"Проблема с пермишенами на роли Поповой","priority":"High","status":"Done","assignee":"Dzmitry Bakovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"56.0","area":"Sales","summary":"Взять в бэклог: limit the contact list for activities","priority":"Low","status":"To Do","assignee":"-","reason":"","comments":"","jira":""},{"id":"57.0","area":"Sales","summary":"Дубликаты лидов","priority":"Medium","status":"To Do","assignee":"Ilya Drazdou","reason":"","comments":"","jira":"ASF-2724"},{"id":"58.0","area":"CV","summary":"запросы на кандидатов в статусе cancel не отображаются на cv dashboard","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"RTFM","comments":"","jira":""},{"id":"59.0","area":"CV","summary":"убрать редактирование для всех юзаков полей Account, project","priority":"Low","status":"on hold","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"60.0","area":"Staffing","summary":"На странице Саплая блок Candidates' Demands должен отображать только актуальные","priority":"Medium","status":"on hold","assignee":"-","reason":"","comments":"","jira":""},{"id":"61.0","area":"CV","summary":"нельзя создать Cv request для кандидата через demand для DM","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"62.0","area":"Staffing","summary":"В деманде нет кнопки Add Candidate","priority":"Blocker","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"63.0","area":"Sales","summary":"Разобраться с дубликатами номеров для Elastic Search","priority":"Medium","status":"Done","assignee":"Dzmitry Bakovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"64.0","area":"DM/PM","summary":"Ограничить доступ к проектам и демандам для SDM только на свои пулы","priority":"Low","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2711"},{"id":"65.0","area":"Sales","summary":"Активности накладываются одна на одну в календаре","priority":"Medium","status":"on hold","assignee":"Siarhei Klimkouski","reason":"Other","comments":"","jira":""},{"id":"66.0","area":"Staffing","summary":"Изменение в распределении лидов. Позволить распределять лидов на деманды до офера","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"67.0","area":"Sales","summary":"Появление ошибки валидации при сохранении Lead Next Step","priority":"High","status":"Done","assignee":"Siarhei Klimkouski","reason":"Bug - Code issue","comments":"","jira":""},{"id":"68.0","area":"Sales","summary":"Изменение статуса контакта. Проблема с имейлами у пользователей","priority":"High","status":"Done","assignee":"Klimava Veranika","reason":"Unexpected requirements","comments":"","jira":""},{"id":"69.0","area":"Sales","summary":"не могу создать оппотьюнити","priority":"High","status":"Done","assignee":"Klimava Veranika","reason":"CRM DB issue","comments":"","jira":""},{"id":"70.0","area":"DM/PM","summary":"Issue with access to the project and demands in SF for the second PM","priority":"Low","status":"To Do","assignee":"","reason":"","comments":"","jira":"ASF-2712"},{"id":"71.0","area":"Sales","summary":"дублирующие Opportunity Contact Role записи","priority":"Low","status":"Done","assignee":"Klimava Veranika","reason":"CRM DB issue","comments":"","jira":""},{"id":"72.0","area":"Pre-Sale DM","summary":"Почистить RfP в сф которые пришли с бд","priority":"High","status":"Done","assignee":"Klimava Veranika","reason":"CRM DB issue","comments":"","jira":""},{"id":"73.0","area":"Staffing","summary":"Кандидаты не распределяются","priority":"Blocker","status":"Done","assignee":"Dzmitry Bakovich","reason":"AirFlow","comments":"","jira":""},{"id":"74.0","area":"Staffing","summary":"У нового деманда не проставился Open Date у некоторых некорректно","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"Bug - Code issue","comments":"","jira":""},{"id":"75.0","area":"DM/PM","summary":"Ошибка при попытке сделать CV request из деманда","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"Permission issue","comments":"","jira":""},{"id":"76.0","area":"Staffing","summary":"На почту не приходят уведомления из CRM у стафов","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"RTFM","comments":"","jira":""},{"id":"77.0","area":"Staffing","summary":"не все кандидаты с recruitment CRM доступны к распределению","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"78.0","area":"DM/PM","summary":"не видны деманды на проекте","priority":"High","status":"Done","assignee":"Klimava Veranika","reason":"Bug - Migration issue","comments":"","jira":""},{"id":"79.0","area":"Staffing","summary":"у RD, SRM нету доступа на просмотр демандов с проекта","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"80.0","area":"Staffing","summary":"появляется ошибка при создании СV request из CV request page","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"81.0","area":"Sales","summary":"Внести правки в роль лида кол центра","priority":"Medium","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2725"},{"id":"82.0","area":"Staffing","summary":"Проблема с распределением на деманд для кср (астафинг)","priority":"Blocker","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"83.0","area":"Pre-Sale DM","summary":"DM не может редактировать деманды, надо проверить пермишены","priority":"Medium","status":"Done","assignee":"-","reason":"","comments":"","jira":""},{"id":"84.0","area":"Staffing","summary":"в отчетах у Саши большое расхождение по количеству supply","priority":"High","status":"In Progress","assignee":"Dzmitry Bakovich","reason":"AirFlow","comments":"","jira":"ASF-2699"},{"id":"85.0","area":"Sales","summary":"Bug: New Activity redirects to the sales card","priority":"Medium","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2726"},{"id":"86.0","area":"Staffing","summary":"отображаются чужие темплейты staff head","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"87.0","area":"Staffing","summary":"можно создавать деманд без привязки к проекту и без DM, PM, SDM","priority":"Blocker","status":"Done","assignee":"Ilya Drazdou","reason":"Unexpected requirements","comments":"","jira":""},{"id":"88.0","area":"Staffing","summary":"не работает автоматизация статусов по demand","priority":"Blocker","status":"To Do","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"89.0","area":"Staffing","summary":"у dm нету возможности редактировать новые поля в блоке addisional information","priority":"Blocker","status":"Done","assignee":"Vasili Vialichka","reason":"Permission issue","comments":"","jira":""},{"id":"90.0","area":"Staffing","summary":"не работает отметка основного кандидата staff manager","priority":"High","status":"Done","assignee":"-","reason":"","comments":"","jira":""},{"id":"91.0","area":"CV","summary":"при клике на статус cv request для кандидата не переходит на CV request","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"92.0","area":"Sales","summary":"отсутствует Budget expectations comment field","priority":"High","status":"Done","assignee":"Siarhei Klimkouski","reason":"Permission issue","comments":"","jira":""},{"id":"93.0","area":"Sales","summary":"Написать автоматизацию по дублированию CompletedDateTime","priority":"Low","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2713"},{"id":"94.0","area":"CV","summary":"для DM, CV maker не отображается инфа из Demand в карточке запроса","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"95.0","area":"CV","summary":"DM не может крепить attachment в Cv request для проекта","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"96.0","area":"Sales","summary":"Active and Draft Demands are not seen in the pipeline","priority":"Medium","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2727"},{"id":"97.0","area":"Staffing","summary":"убрать некорректные статусы из таблицы демандов","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Bug - Migration issue","comments":"","jira":""},{"id":"98.0","area":"Staffing","summary":"у DM теперь доступ ко всем демандам без привязки к owner","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"Other","comments":"","jira":""},{"id":"99.0","area":"Staffing","summary":"Search sprints работают не корректно","priority":"High","status":"In Progress","assignee":"Ilya Drazdou","reason":"Other","comments":"","jira":"ASF-2700"},{"id":"100.0","area":"Sales","summary":"Пофиксить авторемайндеры","priority":"High","status":"Done","assignee":"Siarhei Klimkouski","reason":"Unexpected requirements","comments":"","jira":""},{"id":"101.0","area":"Staffing","summary":"Нет возможности добавить новый спринт","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"Unexpected requirements","comments":"","jira":""},{"id":"102.0","area":"Sales","summary":"лид Е-мейл команды не может переводить рфр в дисквал","priority":"Medium","status":"Done","assignee":"Klimava Veranika","reason":"Permission issue","comments":"","jira":""},{"id":"103.0","area":"Pre-Sale DM","summary":"Vladimir Pedchenko user","priority":"Medium","status":"In Progress","assignee":"Uladzislau Rabau","reason":"Unexpected requirements","comments":"","jira":"ASF-2728"},{"id":"104.0","area":"DM/PM","summary":"не корректное отображение Actual, average profit в демандах","priority":"Low","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2714"},{"id":"105.0","area":"Sales","summary":"No E-mail notifications for any new lead","priority":"Medium","status":"on hold","assignee":"Ilya Drazdou","reason":"Other","comments":"","jira":""},{"id":"106.0","area":"DM/PM","summary":"Просят добавить проекты Wesendit Projects и Grothe Technology GmbH","priority":"Medium","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2729"},{"id":"107.0","area":"Sales","summary":"автоматом переводить в open not contacted лида при смене owner","priority":"Medium","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2730"},{"id":"108.0","area":"Staffing","summary":"Выключить ненужные департменты на демандах","priority":"Medium","status":"Done","assignee":"Klimava Veranika","reason":"Other","comments":"","jira":""},{"id":"109.0","area":"Sales","summary":"Перевод лида из драфта в дисквал","priority":"Medium","status":"Done","assignee":"Ilya Drazdou","reason":"Unexpected requirements","comments":"","jira":"ASF-2731"},{"id":"110.0","area":"Sales","summary":"Контакты перешли из Irrelevant в Review","priority":"Medium","status":"In Progress","assignee":"Palina Skvartsova","reason":"","comments":"","jira":"ASF-2732"},{"id":"111.0","area":"Sales","summary":"у pre-sale lead не создаются draft lead","priority":"High","status":"To Do","assignee":"Siarhei Klimkouski","reason":"","comments":"","jira":"ASF-2701"},{"id":"112.0","area":"DM/PM","summary":"Сетап ролей для Яны Приезжих и Иры Усович","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"113.0","area":"Staffing","summary":"Перевод кандидатов в статус Assigned работает не корректно","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"114.0","area":"Staffing","summary":"Ошибка при переходе на следующую страницу в таблице Демандов","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"115.0","area":"Sales","summary":"Решить проблему в работе КЦ из-за сервиса дубликации","priority":"High","status":"Done","assignee":"Palina Skvartsova","reason":"Bug - Code issue","comments":"","jira":""},{"id":"116.0","area":"Staffing","summary":"В таблице деманда неверно отображается число кандидатов","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"117.0","area":"Staffing","summary":"добавить возможность распределения лаборантов на деманд","priority":"Blocker","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"118.0","area":"Sales","summary":"Не подтянулся проект в аккаунт","priority":"High","status":"Done","assignee":"Klimava Veranika","reason":"Other","comments":"","jira":""},{"id":"119.0","area":"Sales","summary":"Проблема на RFR, задача через Веронику","priority":"Medium","status":"Done","assignee":"Ilya Drazdou","reason":"Permission issue","comments":"","jira":""},{"id":"120.0","area":"Staffing","summary":"посмотреть сколько демандов скедуллеры будут пытаться обновить","priority":"High","status":"To Do","assignee":"Dzmitry Bakovich","reason":"","comments":"","jira":"ASF-2702"},{"id":"121.0","area":"Staffing","summary":"в CR-1 не работает автоматизация по 2 полям domain, company name","priority":"Medium","status":"Done","assignee":"Ilya Drazdou","reason":"Unexpected requirements","comments":"","jira":""},{"id":"122.0","area":"Sales","summary":"Перенести теги account planning 2025 и 2026 из Initial Request","priority":"Blocker","status":"Done","assignee":"Klimava Veranika","reason":"Unexpected requirements","comments":"","jira":""},{"id":"123.0","area":"Sales","summary":"Добавить owner role для Жени Ланских (тендеры)","priority":"Medium","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2733"},{"id":"124.0","area":"Sales","summary":"Исправить поле Business Unit для лидов","priority":"Low","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2715"},{"id":"125.0","area":"Sales","summary":"Проверить проблему с completed date/time у активностей","priority":"Medium","status":"To Do","assignee":"-","reason":"","comments":"","jira":"ASF-2734"},{"id":"126.0","area":"Sales","summary":"при переводе от колл центра к сейлу не создалась активность","priority":"High","status":"In Progress","assignee":"Siarhei Klimkouski","reason":"Bug - Code issue","comments":"","jira":"ASF-2703"},{"id":"127.0","area":"Sales","summary":"Проставить всем нужным лидам Primary true","priority":"High","status":"Done","assignee":"Klimava Veranika","reason":"Unexpected requirements","comments":"","jira":""},{"id":"128.0","area":"Sales","summary":"Проставить аккаунт овнером от опп","priority":"High","status":"Done","assignee":"Klimava Veranika","reason":"CRM DB issue","comments":"","jira":""},{"id":"129.0","area":"CV","summary":"При переводе запроса св из кенсела нельзя повторно заказть cv","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"130.0","area":"CV","summary":"При создании из деманда коммент из модального окна подтягивается, но добавить нельзя","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"131.0","area":"CV","summary":"Требования с деманда не подтягиваются в запрос","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"132.0","area":"Sales","summary":"Обновить карент активити для звонков","priority":"Medium","status":"Done","assignee":"Klimava Veranika","reason":"Unexpected requirements","comments":"","jira":""},{"id":"133.0","area":"CV","summary":"Почему в названии для CV 92, а не имя кандидата?","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"134.0","area":"CV","summary":"На дашборде CV-мейкера не отображается статус кандидата","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"135.0","area":"CV","summary":"Не подтягиваются данные поля с деманда","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Permission issue","comments":"","jira":""},{"id":"136.0","area":"Staffing","summary":"New cards created in Astaffing are not appearing in the system","priority":"High","status":"In Progress","assignee":"Dzmitry Bakovich","reason":"AirFlow","comments":"","jira":"ASF-2704"},{"id":"137.0","area":"Sales","summary":"Closed-Converted до сих пор доступно на проде для проставления с path","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"RTFM","comments":"","jira":""},{"id":"138.0","area":"Staffing","summary":"Подтянуть драфт деманды к проекту","priority":"Medium","status":"Done","assignee":"","reason":"","comments":"","jira":""},{"id":"139.0","area":"Staffing","summary":"При клонировании деманда не подтягивает проект","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"140.0","area":"Sales","summary":"Вынести коммент филд на лейаут в активностях","priority":"Medium","status":"To Do","assignee":"","reason":"Unexpected requirements","comments":"","jira":"ASF-2735"},{"id":"141.0","area":"Sales","summary":"Полный список Opp для RFP не отображается","priority":"Medium","status":"Done","assignee":"","reason":"RTFM","comments":"","jira":""},{"id":"142.0","area":"Staffing","summary":"пропала возможность снять кандидатов через Cancel","priority":"High","status":"Done","assignee":"Dzmitry Bakovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"143.0","area":"Sales","summary":"Email notifications for new leads are not working","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"RTFM","comments":"","jira":""},{"id":"144.0","area":"Staffing","summary":"не работает автоматизация на проставление статуса assigned","priority":"High","status":"To Do","assignee":"Dzmitry Bakovich","reason":"AirFlow","comments":"","jira":"ASF-2705"},{"id":"145.0","area":"Staffing","summary":"Нельзя поставить дью дейт в прошлом (на вчера)","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"146.0","area":"Staffing","summary":"Увеличить отображение кол-ва демандов на таблице до 200","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"147.0","area":"DM/PM","summary":"Сделать синк между Project-opp-demand","priority":"Low","status":"To Do","assignee":"","reason":"","comments":"","jira":"ASF-2716"},{"id":"148.0","area":"Staffing","summary":"При нажатии на название проекта открывается карточка проекта, а не деманда","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"149.0","area":"CV","summary":"first upload date, upload date некорректно работает, cv type не подтягивается","priority":"High","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Other","comments":"","jira":""},{"id":"150.0","area":"Sales","summary":"Переименовать табу Draft Demands на оппотьюнити в Demands","priority":"Medium","status":"Done","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"151.0","area":"Sales","summary":"Пересмотреть переезд тегов, опп точно","priority":"Low","status":"To Do","assignee":"Klimava Veranika","reason":"Unexpected requirements","comments":"","jira":"ASF-2717"},{"id":"152.0","area":"Sales","summary":"Неверное отображение даты активности в календаре","priority":"Medium","status":"To Do","assignee":"","reason":"Other","comments":"","jira":"ASF-2736"},{"id":"153.0","area":"Staffing","summary":"При закрытии деманда с открытым поиском в сф поиск не закрывается","priority":"Medium","status":"To Do","assignee":"","reason":"","comments":"","jira":"ASF-2737"},{"id":"154.0","area":"Staffing","summary":"в деманде был снят main candidate, но новому кандидату не даёт проставить статус","priority":"Medium","status":"To Do","assignee":"","reason":"","comments":"","jira":"ASF-2738"},{"id":"155.0","area":"Sales","summary":"Перевести все записи на Kirill Rudy (поздно завели)","priority":"Medium","status":"To Do","assignee":"Klimava Veranika","reason":"Other","comments":"","jira":"ASF-2739"},{"id":"156.0","area":"Pre-Sale DM","summary":"дать Anastasiya Pilipchuk Pre-SDM пермишен","priority":"Low","status":"To Do","assignee":"Klimava Veranika","reason":"Unexpected requirements","comments":"","jira":"ASF-2718"},{"id":"157.0","area":"Pre-Sale DM","summary":"RfP перевод из Proposal Ready в Done вылазит ошибка Unknown error","priority":"Blocker","status":"In Progress","assignee":"Uladzislau Rabau","reason":"Bug - Code issue","comments":"","jira":"ASF-2698"},{"id":"158.0","area":"Sales","summary":"Исправить таски, которые ассайнятся на сис админа вместо лид оунера","priority":"Blocker","status":"Done","assignee":"Siarhei Klimkouski","reason":"Other","comments":"","jira":""},{"id":"159.0","area":"DM/PM","summary":"SDM не может проставлять на проекте DM и PM","priority":"Blocker","status":"Done","assignee":"Ilya Drazdou","reason":"Permission issue","comments":"","jira":""},{"id":"160.0","area":"DM/PM","summary":"Не отправляется проект в 1С","priority":"Blocker","status":"Done","assignee":"Siarhei Klimkouski","reason":"RTFM","comments":"","jira":""},{"id":"161.0","area":"DM/PM","summary":"Не отправляется проект ClarityPay - Staff Augmentation в 1С","priority":"Blocker","status":"Done","assignee":"Vasili Vialichka","reason":"RTFM","comments":"","jira":""},{"id":"162.0","area":"Staffing","summary":"в демандах при снятии кандидатов меняется дата открытия на сегодняшнюю","priority":"Medium","status":"To Do","assignee":"","reason":"Bug - Code issue","comments":"","jira":"ASF-2740"},{"id":"163.0","area":"Sales","summary":"Деманды нужно перевести на нужный проект/оппти","priority":"Medium","status":"Done","assignee":"","reason":"Other","comments":"","jira":""},{"id":"164.0","area":"Sales","summary":"Переименовать Opportunity Related list на Demands","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"Bug - Code issue","comments":"","jira":"ASF-2706"},{"id":"165.0","area":"Staffing","summary":"В таблице кандидатов на деманд нет даты распределения кандидата","priority":"High","status":"To Do","assignee":"Yuliya Trukhanovich","reason":"Unexpected requirements","comments":"","jira":""},{"id":"166.0","area":"CV","summary":"Комплекс проблем по CV части","priority":"High","status":"In Progress","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"167.0","area":"Sales","summary":"Доп фильтрация-бан лист для емейл лидгенов","priority":"High","status":"In Progress","assignee":"Siarhei Klimkouski","reason":"Unexpected requirements","comments":"","jira":"ASF-2707"},{"id":"168.0","area":"Sales","summary":"Не переводится деманда из Draft в Cancel by Sales Assistant","priority":"Medium","status":"To Do","assignee":"","reason":"Permission issue","comments":"","jira":"ASF-2741"},{"id":"169.0","area":"Sales","summary":"Инвестигейт репортов от Бебех","priority":"Medium","status":"on hold","assignee":"Klimava Veranika","reason":"Other","comments":"","jira":"ASF-2742"},{"id":"170.0","area":"Sales","summary":"Решить ситуацию с дубликатами","priority":"Low","status":"--","assignee":"","reason":"","comments":"","jira":""},{"id":"170.0","area":"Sales","summary":"Error when saving phone number in the opp","priority":"Medium","status":"To Do","assignee":"","reason":"","comments":"","jira":""},{"id":"171.0","area":"CV","summary":"Поле ASAP deadline не проставляется в CV dashboard, CVs","priority":"Medium","status":"To Do","assignee":"Yuliya Trukhanovich","reason":"Bug - Code issue","comments":"","jira":""},{"id":"172.0","area":"Sales","summary":"неправильное распределение стран по BU","priority":"High","status":"To Do","assignee":"","reason":"","comments":"","jira":""},{"id":"172.0","area":"Sales","summary":"Перевести лидов конференции от колл центра на Юлю Бебех","priority":"High","status":"Done","assignee":"Klimava Veranika","reason":"Other","comments":"","jira":""},{"id":"173.0","area":"Sales","summary":"Нужен нормальный инвестигейт как делать фильтры на дашборде","priority":"Medium","status":"--","assignee":"","reason":"Other","comments":"","jira":""},{"id":"174.0","area":"Staffing","summary":"Поле account name на деманде тянется не account, а с project","priority":"Low","status":"To Do","assignee":"","reason":"Bug - Code issue","comments":"","jira":""},{"id":"175.0","area":"Staffing","summary":"при создании деманда не сохраняются введённые значения в поля must have и nice to have","priority":"Medium","status":"In Progress","assignee":"Ilya Drazdou","reason":"Bug - Code issue","comments":"","jira":""},{"id":"176.0","area":"Sales","summary":"Can't send amfori Product Consulting & Notification Pilot to archived won","priority":"High","status":"Done","assignee":"Ilya Drazdou","reason":"","comments":"","jira":""},{"id":"177.0","area":"Sales","summary":"need a downloaded list of emails of contacts in status contact only and prospecting","priority":"Medium","status":"Done","assignee":"Klimava Veranika","reason":"","comments":"","jira":""}];
+
+const JIRA = [{"key":"AS-13966","type":"Bugs","summary":"User can't log in","assignee":"Tatsiana Klimko","reporter":"Anastasiya Pilipchuk","priority":"Medium","status":"In Progress","resolution":"","created":"06.04.2026","resolved":""},{"key":"AS-13991","type":"Bugs","summary":"A Mail Agent that collect emails doesn't work after migration in all cards","assignee":"Tatsiana Klimko","reporter":"Anastasiya Lukyanchyk","priority":"Medium","status":"In Progress","resolution":"","created":"07.04.2026","resolved":""},{"key":"AS-13997","type":"Bugs","summary":"Not all project are visible in SF","assignee":"Tatsiana Klimko","reporter":"Tatsiana Yurchyk","priority":"Medium","status":"In Progress","resolution":"","created":"07.04.2026","resolved":""},{"key":"AS-14016","type":"Bugs","summary":"Please delete the lead as it turned out to be a duplicate.","assignee":"Tatsiana Klimko","reporter":"Katsiaryna Barouskaya","priority":"Medium","status":"In Progress","resolution":"","created":"07.04.2026","resolved":""},{"key":"AS-14104","type":"Get access to Internal Projects","summary":"can't access my SF account","assignee":"Tatsiana Klimko","reporter":"Tatsiana Straltsova","priority":"Medium","status":"Waiting for approval","resolution":"","created":"13.04.2026","resolved":""},{"key":"AS-14125","type":"Get access to Internal Projects","summary":"SalesOps credentials","assignee":"Tatsiana Klimko","reporter":"Veranika Kantsavaya","priority":"Medium","status":"Waiting for approval","resolution":"","created":"13.04.2026","resolved":""},{"key":"AS-14027","type":"Improvements","summary":"Create a state field for the BU USA objects","assignee":"Tatsiana Klimko","reporter":"Maryna Rybalka","priority":"Medium","status":"Waiting for approval","resolution":"","created":"08.04.2026","resolved":""},{"key":"AS-13954","type":"Bugs","summary":"0 leads in SF","assignee":"Tatsiana Klimko","reporter":"Anaseva Anna","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"06.04.2026"},{"key":"AS-13938","type":"Get access to Internal Projects","summary":"no access","assignee":"Tatsiana Klimko","reporter":"Aliaksei Shupenka","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"06.04.2026"},{"key":"AS-13939","type":"Get access to Internal Projects","summary":"can not log in to SF","assignee":"Tatsiana Klimko","reporter":"Zhannel Khalelova","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"06.04.2026"},{"key":"AS-13937","type":"Bugs","summary":"Cannot access Salesforce","assignee":"Tatsiana Klimko","reporter":"Tatsiana Reutskaya","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"06.04.2026"},{"key":"AS-13949","type":"Bugs","summary":"salesforce issue with lead status","assignee":"Tatsiana Klimko","reporter":"Andrei Krutautsou","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"06.04.2026"},{"key":"AS-13960","type":"Bugs","summary":"transfer the sale from the salesforce administrator to Adil Mansimov","assignee":"Tatsiana Klimko","reporter":"Anaseva Anna","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"06.04.2026"},{"key":"AS-13964","type":"Bugs","summary":"can't change the status form MQL to Open-not-Contacted","assignee":"Tatsiana Klimko","reporter":"Korol Yuliya","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"06.04.2026"},{"key":"AS-13948","type":"Bugs","summary":"No projects","assignee":"Tatsiana Klimko","reporter":"Darya Saladukha","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"07.04.2026"},{"key":"AS-14034","type":"Bugs","summary":"Budget expectations comment field","assignee":"Tatsiana Klimko","reporter":"Darya Kukharchuk","priority":"Medium","status":"Done","resolution":"Done","created":"08.04.2026","resolved":"09.04.2026"},{"key":"AS-13986","type":"Bugs","summary":"I need to retain my access to the project","assignee":"Tatsiana Klimko","reporter":"Ihor Bulakh","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"07.04.2026"},{"key":"AS-13992","type":"Bugs","summary":"please help to enter salesforce","assignee":"Tatsiana Klimko","reporter":"Nataliya Maslak","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"07.04.2026"},{"key":"AS-14001","type":"Bugs","summary":"Add a virtual profile to my Salesforce","assignee":"Tatsiana Klimko","reporter":"Yuliya Krasilevich","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"07.04.2026"},{"key":"AS-13983","type":"Bugs","summary":"Don't see follow-ups that previous leagens potentially could put","assignee":"Tatsiana Klimko","reporter":"Darya Kiyenia","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"07.04.2026"},{"key":"AS-13975","type":"Bugs","summary":"I cannot put the PM in opportunity. How can it be fixed?","assignee":"Tatsiana Klimko","reporter":"Anastasiya Lukyanchyk","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"08.04.2026"},{"key":"AS-13970","type":"Get access to Internal Projects","summary":"SF access for PM of the project Kivira Dev phase","assignee":"Tatsiana Klimko","reporter":"Patrytsyia Chakhovich","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"07.04.2026"},{"key":"AS-14010","type":"Bugs","summary":"cannot set FU for lead that is in Review status at other owner","assignee":"Tatsiana Klimko","reporter":"Elena Reabuhina","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"08.04.2026"},{"key":"AS-13942","type":"Get access to Internal Projects","summary":"Getting access to SalesForce PC Dziamentsi Rudzko","assignee":"Tatsiana Klimko","reporter":"Dziamentsi Rudzko","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"07.04.2026"},{"key":"AS-14008","type":"Bugs","summary":"Duplicate lead card issue before scheduled meeting","assignee":"Tatsiana Klimko","reporter":"Kiryl Kunhurtsau","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"08.04.2026"},{"key":"AS-13947","type":"Bugs","summary":"I have no projects in my Sales force account","assignee":"Tatsiana Klimko","reporter":"Sofia Belova","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"08.04.2026"},{"key":"AS-13955","type":"Bugs","summary":"Please change the lead's status","assignee":"Tatsiana Klimko","reporter":"Yana Staravoitava","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"08.04.2026"},{"key":"AS-13944","type":"Bugs","summary":"don't see the demands","assignee":"Tatsiana Klimko","reporter":"Veranika Dziamidava","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"08.04.2026"},{"key":"AS-14021","type":"Bugs","summary":"The Next Steps fields in the demand are inactive on my side.","assignee":"Tatsiana Klimko","reporter":"Ihor Bulakh","priority":"Medium","status":"Done","resolution":"Done","created":"08.04.2026","resolved":"08.04.2026"},{"key":"AS-14006","type":"Bugs","summary":"Unable to change lead status (error FIELD_CUSTOM_VALIDATION_EXCEPTION)","assignee":"Tatsiana Klimko","reporter":"Vasili Yankouski","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"09.04.2026"},{"key":"AS-13989","type":"Bugs","summary":"Mail agent","assignee":"Tatsiana Klimko","reporter":"Darja Bulko","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"09.04.2026"},{"key":"AS-13996","type":"Bugs","summary":"Set up a Mail Agent","assignee":"Tatsiana Klimko","reporter":"Juliana Tchernyakova","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"09.04.2026"},{"key":"AS-14033","type":"Bugs","summary":"Not all necessary info is filled out in the demands","assignee":"Tatsiana Klimko","reporter":"Yanina Sasnouskaya","priority":"Medium","status":"Done","resolution":"Done","created":"08.04.2026","resolved":"09.04.2026"},{"key":"AS-13963","type":"Bugs","summary":"The Accounts, RFPs and Demands sections are empty","assignee":"Tatsiana Klimko","reporter":"Darya Kukharchuk","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"07.04.2026"},{"key":"AS-13987","type":"Bugs","summary":"Due time in internal tasks","assignee":"Tatsiana Klimko","reporter":"Darya Kukharchuk","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"07.04.2026"},{"key":"AS-13943","type":"Bugs","summary":"I can't see my projects and demands in Salesforce","assignee":"Tatsiana Klimko","reporter":"Andrii Kadanik","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"07.04.2026"},{"key":"AS-13976","type":"Get access to Internal Projects","summary":"have no accounts after moving from CRM to SF","assignee":"Tatsiana Klimko","reporter":"Zhannel Khalelova","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"09.04.2026"},{"key":"AS-14106","type":"Bugs","summary":"change the assigned sales manager","assignee":"Tatsiana Klimko","reporter":"Raman Dzmitrakovich","priority":"Medium","status":"Done","resolution":"Done","created":"13.04.2026","resolved":"13.04.2026"},{"key":"AS-13967","type":"Get access to Internal Projects","summary":"Salesforce credentials, problems with access to salesforce","assignee":"Tatsiana Klimko","reporter":"Iryna Shturma","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"13.04.2026"},{"key":"AS-13988","type":"Working with Database","summary":"No leads uploaded in SF","assignee":"Tatsiana Klimko","reporter":"Satenik Manukyan","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"09.04.2026"},{"key":"AS-13950","type":"Bugs","summary":"I don't have projects and demands in SF","assignee":"Tatsiana Klimko","reporter":"Uladzislau Murashka","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"09.04.2026"},{"key":"AS-14061","type":"Bugs","summary":"Cannot move task to Done","assignee":"Tatsiana Klimko","reporter":"Yelizaveta Bandziaruk","priority":"Medium","status":"Done","resolution":"Done","created":"09.04.2026","resolved":"13.04.2026"},{"key":"AS-13956","type":"Get access to Internal Projects","summary":"need an access to Siarhei Skiruk's SF account","assignee":"Tatsiana Klimko","reporter":"Marharyta Halavach","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"09.04.2026"},{"key":"AS-13968","type":"Bugs","summary":"I can't create a project and the old project didn't load from the CRM.","assignee":"Tatsiana Klimko","reporter":"Aliaksandra Dzemidovich","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"09.04.2026"},{"key":"AS-14103","type":"Bugs","summary":"Error when changing the status","assignee":"Tatsiana Klimko","reporter":"Kiryl Sharapkin","priority":"Medium","status":"Done","resolution":"Done","created":"13.04.2026","resolved":"13.04.2026"},{"key":"AS-14020","type":"Bugs","summary":"There is an error when I try to create a CV request from the demand","assignee":"Tatsiana Klimko","reporter":"Ihor Bulakh","priority":"Medium","status":"Done","resolution":"Done","created":"08.04.2026","resolved":"09.04.2026"},{"key":"AS-13971","type":"Bugs","summary":"This sale belongs to Adil Mansimov","assignee":"Tatsiana Klimko","reporter":"Anaseva Anna","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"07.04.2026"},{"key":"AS-13974","type":"Bugs","summary":"Empty account and RFP section","assignee":"Tatsiana Klimko","reporter":"Anastasiya Lukyanchyk","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"07.04.2026"},{"key":"AS-13982","type":"Bugs","summary":"Sofie Wanner is not displayed in my account","assignee":"Tatsiana Klimko","reporter":"Yuliya Barsukova","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"07.04.2026"},{"key":"AS-14028","type":"Bugs","summary":"Can log in under the wrong user","assignee":"Tatsiana Klimko","reporter":"Palina Piliutkevich","priority":"Medium","status":"Done","resolution":"Done","created":"08.04.2026","resolved":"08.04.2026"},{"key":"AS-14009","type":"Bugs","summary":"The e-mail is already used for the contact Javid Mahmudzade","assignee":"Tatsiana Klimko","reporter":"Anaseva Anna","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"08.04.2026"},{"key":"AS-13962","type":"Bugs","summary":"Profitability Button doesn't work","assignee":"Tatsiana Klimko","reporter":"Anastasiya Pilipchuk","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"07.04.2026"},{"key":"AS-13993","type":"Get access to Internal Projects","summary":"Need DM access for SF for all Allianz and SiSu projects","assignee":"Tatsiana Klimko","reporter":"Anton Belenski","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"07.04.2026"},{"key":"AS-13973","type":"Bugs","summary":"Can't log into my SF account through SSO","assignee":"Tatsiana Klimko","reporter":"Anna Tukhvatullina","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"07.04.2026"},{"key":"AS-14047","type":"Bugs","summary":"Project is not linked when cloning a demand","assignee":"Tatsiana Klimko","reporter":"Ihor Bulakh","priority":"Medium","status":"Done","resolution":"Done","created":"08.04.2026","resolved":"08.04.2026"},{"key":"AS-14014","type":"Bugs","summary":"I can not request CV","assignee":"Tatsiana Klimko","reporter":"Sofia Belova","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"08.04.2026"},{"key":"AS-14015","type":"Bugs","summary":"Unable to create opportunity","assignee":"Tatsiana Klimko","reporter":"Aliaksandra Dzemidovich","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"09.04.2026"},{"key":"AS-13980","type":"Bugs","summary":"Access to the demand","assignee":"Tatsiana Klimko","reporter":"Ihor Bulakh","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"08.04.2026"},{"key":"AS-14090","type":"Bugs","summary":"Bugs while changing status","assignee":"Tatsiana Klimko","reporter":"Maryna Yakubava","priority":"Medium","status":"Done","resolution":"Done","created":"10.04.2026","resolved":"13.04.2026"},{"key":"AS-14064","type":"Get access to Internal Projects","summary":"Access to demands in SF","assignee":"Tatsiana Klimko","reporter":"Katsiaryna Ivankovich","priority":"Medium","status":"Done","resolution":"Done","created":"09.04.2026","resolved":"13.04.2026"},{"key":"AS-14046","type":"Bugs","summary":"Access to the RFP","assignee":"Tatsiana Klimko","reporter":"Andrei Krotov","priority":"Medium","status":"Done","resolution":"Done","created":"08.04.2026","resolved":"14.04.2026"},{"key":"AS-14086","type":"Bugs","summary":"Restore 45 leads after ownership switch","assignee":"Tatsiana Klimko","reporter":"Ivan Smirnou","priority":"Medium","status":"Done","resolution":"Done","created":"10.04.2026","resolved":"14.04.2026"},{"key":"AS-14071","type":"Bugs","summary":"SSO issue","assignee":"Tatsiana Klimko","reporter":"Andrii Kadanik","priority":"Medium","status":"Done","resolution":"Done","created":"10.04.2026","resolved":"10.04.2026"},{"key":"AS-14077","type":"Bugs","summary":"Added leads to the wrong Virtual profile","assignee":"Tatsiana Klimko","reporter":"Darya Kiyenia","priority":"Medium","status":"Done","resolution":"Done","created":"10.04.2026","resolved":"10.04.2026"},{"key":"AS-14005","type":"Improvements","summary":"Add adjustment for lead report page overview","assignee":"Tatsiana Klimko","reporter":"Viktor Dmytrik","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"14.04.2026"},{"key":"AS-14149","type":"Bugs","summary":"Duplicate","assignee":"Tatsiana Klimko","reporter":"Olga Khaliukova","priority":"Medium","status":"Done","resolution":"Done","created":"14.04.2026","resolved":"14.04.2026"},{"key":"AS-14164","type":"Bugs","summary":"Please change the Initial Source of Lead","assignee":"Tatsiana Klimko","reporter":"Valeryia Misouskaya","priority":"Medium","status":"Done","resolution":"Done","created":"14.04.2026","resolved":"14.04.2026"},{"key":"AS-14068","type":"Bugs","summary":"Not the whole projects are in the list","assignee":"Tatsiana Klimko","reporter":"Katsiaryna Baygin","priority":"Medium","status":"Done","resolution":"Done","created":"10.04.2026","resolved":"10.04.2026"},{"key":"AS-14076","type":"Bugs","summary":"Access issue","assignee":"Tatsiana Klimko","reporter":"Lizaveta Halenchyk","priority":"Medium","status":"Done","resolution":"Done","created":"10.04.2026","resolved":"10.04.2026"},{"key":"AS-14142","type":"Bugs","summary":"Please change the origin from site to Reference","assignee":"Tatsiana Klimko","reporter":"Yelizaveta Biarezinchuk","priority":"Medium","status":"Done","resolution":"Done","created":"14.04.2026","resolved":"14.04.2026"},{"key":"AS-14045","type":"Bugs","summary":"Salesforce is not working correctly","assignee":"Tatsiana Klimko","reporter":"Darya Akimava","priority":"Medium","status":"Done","resolution":"Done","created":"08.04.2026","resolved":"10.04.2026"},{"key":"AS-14131","type":"Bugs","summary":"Cannot login into SF neither with SSO, nor with username and password","assignee":"Tatsiana Klimko","reporter":"Margaryta Shynkarenko","priority":"Medium","status":"Done","resolution":"Done","created":"13.04.2026","resolved":"14.04.2026"},{"key":"AS-14157","type":"Bugs","summary":"no access to CV requests","assignee":"Tatsiana Klimko","reporter":"Volha Hrytsuk","priority":"Medium","status":"Done","resolution":"Done","created":"14.04.2026","resolved":"14.04.2026"},{"key":"AS-13965","type":"Improvements","summary":"Add a Salesforce status indicator to the company's LinkedIn page","assignee":"Tatsiana Klimko","reporter":"Euhenia Goncharova","priority":"Medium","status":"Done","resolution":"Done","created":"06.04.2026","resolved":"10.04.2026"},{"key":"AS-14132","type":"Bugs","summary":"Salesforce is not working correctly (2)","assignee":"Tatsiana Klimko","reporter":"Darya Akimava","priority":"Medium","status":"Done","resolution":"Done","created":"14.04.2026","resolved":"14.04.2026"},{"key":"AS-14019","type":"Get access to Internal Projects","summary":"Can not add info to demands","assignee":"Tatsiana Klimko","reporter":"Sanzhar Kamitov","priority":"Medium","status":"Done","resolution":"Done","created":"08.04.2026","resolved":"10.04.2026"},{"key":"AS-14022","type":"Bugs","summary":"Error while creating a CV request","assignee":"Tatsiana Klimko","reporter":"Yanina Sasnouskaya","priority":"Medium","status":"Done","resolution":"Done","created":"08.04.2026","resolved":"10.04.2026"},{"key":"AS-14031","type":"Bugs","summary":"The dialogue with the lead is not transferred to the SF","assignee":"Tatsiana Klimko","reporter":"Hanna Kraskovich","priority":"Medium","status":"Done","resolution":"Done","created":"08.04.2026","resolved":"14.04.2026"},{"key":"AS-14074","type":"Bugs","summary":"Email notifications for new leads are not working, incoming emails are not synced","assignee":"Tatsiana Klimko","reporter":"Yuliya Rusalouskaya","priority":"Medium","status":"Done","resolution":"Done","created":"10.04.2026","resolved":"10.04.2026"},{"key":"AS-14145","type":"Bugs","summary":"Can't change status to Done","assignee":"Tatsiana Klimko","reporter":"Viktoryia Natseuskaya","priority":"Medium","status":"Done","resolution":"Done","created":"14.04.2026","resolved":"14.04.2026"},{"key":"AS-14094","type":"Bugs","summary":"Cannot send project to 1c","assignee":"Tatsiana Klimko","reporter":"Yelizaveta Bandziaruk","priority":"Medium","status":"Done","resolution":"Done","created":"13.04.2026","resolved":"13.04.2026"},{"key":"AS-14069","type":"Bugs","summary":"SalesForce Sign In Error","assignee":"Tatsiana Klimko","reporter":"Aliaksandr Kratkouski","priority":"Medium","status":"Done","resolution":"Done","created":"10.04.2026","resolved":"10.04.2026"},{"key":"AS-14087","type":"Bugs","summary":"Need to change the project in the demand","assignee":"Tatsiana Klimko","reporter":"Katsiaryna Baygin","priority":"Medium","status":"Done","resolution":"Done","created":"10.04.2026","resolved":"10.04.2026"},{"key":"AS-14066","type":"Bugs","summary":"Failure to track Step or disqualify the lead","assignee":"Tatsiana Klimko","reporter":"Nadzeya Vysotskaya","priority":"Medium","status":"Done","resolution":"Done","created":"09.04.2026","resolved":"09.04.2026"},{"key":"AS-14056","type":"Bugs","summary":"Don't see the project","assignee":"Tatsiana Klimko","reporter":"Darya Kukharchuk","priority":"Medium","status":"Done","resolution":"Done","created":"09.04.2026","resolved":"10.04.2026"},{"key":"AS-14007","type":"Bugs","summary":"Contact Duplicates","assignee":"Tatsiana Klimko","reporter":"Anastasiya Lukyanchyk","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"10.04.2026"},{"key":"AS-14013","type":"Bugs","summary":"I cannot see activity in my calendar but can see in opp card","assignee":"Tatsiana Klimko","reporter":"Anastasiya Lukyanchyk","priority":"Medium","status":"Done","resolution":"Done","created":"07.04.2026","resolved":"10.04.2026"},{"key":"AS-14081","type":"Bugs","summary":"Please add SDM","assignee":"Tatsiana Klimko","reporter":"Darya Kukharchuk","priority":"Medium","status":"Done","resolution":"Done","created":"10.04.2026","resolved":"10.04.2026"},{"key":"AS-14098","type":"Working with Database","summary":"need a downloaded list of emails of contacts in status contact only and prospecting","assignee":"Tatsiana Klimko","reporter":"Zhannel Khalelova","priority":"Medium","status":"Done","resolution":"Done","created":"13.04.2026","resolved":"14.04.2026"},{"key":"AS-14158","type":"Bugs","summary":"Can't send to archived won","assignee":"Tatsiana Klimko","reporter":"Darya Kukharchuk","priority":"Medium","status":"Done","resolution":"Done","created":"14.04.2026","resolved":"14.04.2026"},{"key":"AS-13978","type":"Get access to Internal Projects","summary":"I need access to the system to work on the project.","assignee":"Tatsiana Klimko","reporter":"Aryna Kupratsevich","priority":"Medium","status":"Rejected","resolution":"Rejected","created":"07.04.2026","resolved":"07.04.2026"},{"key":"AS-14041","type":"Bugs","summary":"Change status to closed won","assignee":"Tatsiana Klimko","reporter":"Yelizaveta Biarezinchuk","priority":"Medium","status":"Rejected","resolution":"Rejected","created":"08.04.2026","resolved":"13.04.2026"},{"key":"AS-14040","type":"Bugs","summary":"Change status to closed won (2)","assignee":"Tatsiana Klimko","reporter":"Yelizaveta Biarezinchuk","priority":"Medium","status":"Rejected","resolution":"Rejected","created":"08.04.2026","resolved":"13.04.2026"},{"key":"AS-14039","type":"Bugs","summary":"Change status to closed won (3)","assignee":"Tatsiana Klimko","reporter":"Yelizaveta Biarezinchuk","priority":"Medium","status":"Rejected","resolution":"Rejected","created":"08.04.2026","resolved":"13.04.2026"},{"key":"AS-14038","type":"Bugs","summary":"Change status to closed won (4)","assignee":"Tatsiana Klimko","reporter":"Yelizaveta Biarezinchuk","priority":"Medium","status":"Rejected","resolution":"Rejected","created":"08.04.2026","resolved":"13.04.2026"},{"key":"AS-14051","type":"Bugs","summary":"incorrect project name in the demand","assignee":"Tatsiana Klimko","reporter":"Polina Rachkova","priority":"Medium","status":"Rejected","resolution":"Rejected","created":"08.04.2026","resolved":"08.04.2026"},{"key":"AS-14073","type":"Bugs","summary":"change the status","assignee":"Tatsiana Klimko","reporter":"Iryna Tsitavets","priority":"Medium","status":"Rejected","resolution":"Rejected","created":"10.04.2026","resolved":"13.04.2026"},{"key":"AS-14080","type":"Get access to Internal Projects","summary":"Change Lead's status from Review back to Contact Attempted","assignee":"Tatsiana Klimko","reporter":"Lizaveta Lipoukina","priority":"Medium","status":"Rejected","resolution":"Rejected","created":"10.04.2026","resolved":"10.04.2026"},{"key":"AS-13941","type":"Get access to Internal Projects","summary":"Access to Andersen SF","assignee":"Tatsiana Klimko","reporter":"Katsiaryna Yadzevich","priority":"Medium","status":"New","resolution":"","created":"06.04.2026","resolved":""},{"key":"AS-14004","type":"Get access to Internal Projects","summary":"Fix Salesforce access","assignee":"Tatsiana Klimko","reporter":"Igor Mashkovsky","priority":"Medium","status":"New","resolution":"","created":"07.04.2026","resolved":""},{"key":"AS-14002","type":"Get access to Internal Projects","summary":"Plz grant access to SF","assignee":"Tatsiana Klimko","reporter":"Hanna Nikitsenka","priority":"Medium","status":"New","resolution":"","created":"07.04.2026","resolved":""},{"key":"AS-14055","type":"Get access to Internal Projects","summary":"Don't see current Demands & Projects","assignee":"Tatsiana Klimko","reporter":"Katerina Krapivka","priority":"Medium","status":"New","resolution":"","created":"09.04.2026","resolved":""},{"key":"AS-13945","type":"Get access to Internal Projects","summary":"Access to Andersen SF (2)","assignee":"Tatsiana Klimko","reporter":"Katsiaryna Yadzevich","priority":"Medium","status":"New","resolution":"","created":"06.04.2026","resolved":""},{"key":"AS-13979","type":"Bugs","summary":"Actual profit isn't calculated properly","assignee":"Tatsiana Klimko","reporter":"Ihor Bulakh","priority":"Medium","status":"Analysis","resolution":"","created":"07.04.2026","resolved":""},{"key":"AS-14035","type":"Bugs","summary":"No E-mail notifications","assignee":"Tatsiana Klimko","reporter":"Siarhei Zubau","priority":"Medium","status":"Analysis","resolution":"","created":"08.04.2026","resolved":""},{"key":"AS-14048","type":"Bugs","summary":"bug","assignee":"Tatsiana Klimko","reporter":"Tatsiana Shkoda","priority":"Medium","status":"Analysis","resolution":"","created":"08.04.2026","resolved":""},{"key":"AS-14044","type":"Bugs","summary":"Salesforce is not working correctly (Analysis)","assignee":"Tatsiana Klimko","reporter":"Darya Akimava","priority":"Medium","status":"Analysis","resolution":"","created":"08.04.2026","resolved":""},{"key":"AS-13969","type":"Bugs","summary":"Problems with status","assignee":"Tatsiana Klimko","reporter":"Nastassia Kaparykha","priority":"Medium","status":"Analysis","resolution":"","created":"06.04.2026","resolved":""},{"key":"AS-14036","type":"Bugs","summary":"Plz change demand status to assigned one","assignee":"Tatsiana Klimko","reporter":"Valiantsina Yantsevich","priority":"Medium","status":"Analysis","resolution":"","created":"08.04.2026","resolved":""},{"key":"AS-14118","type":"Bugs","summary":"System doesn't show sent/received emails in opportunity","assignee":"Tatsiana Klimko","reporter":"Anastasiya Lukyanchyk","priority":"Medium","status":"Analysis","resolution":"","created":"13.04.2026","resolved":""},{"key":"AS-14100","type":"Bugs","summary":"Email agent is not working, emails do not go into the SF","assignee":"Tatsiana Klimko","reporter":"Yelizaveta Biarezinchuk","priority":"Medium","status":"Analysis","resolution":"","created":"13.04.2026","resolved":""},{"key":"AS-14075","type":"Bugs","summary":"Incorrect message sync in Salesforce – misplaced message in activity history","assignee":"Tatsiana Klimko","reporter":"Mazeika Natallia","priority":"Medium","status":"Analysis","resolution":"","created":"10.04.2026","resolved":""},{"key":"AS-14123","type":"Bugs","summary":"SF","assignee":"Tatsiana Klimko","reporter":"Darya Saladukha","priority":"Medium","status":"Analysis","resolution":"","created":"13.04.2026","resolved":""},{"key":"AS-14122","type":"Bugs","summary":"Missing messages in Salesforce – incomplete LinkedIn conversation sync","assignee":"Tatsiana Klimko","reporter":"Mazeika Natallia","priority":"Medium","status":"Analysis","resolution":"","created":"13.04.2026","resolved":""},{"key":"AS-14085","type":"Bugs","summary":"Incorrect data display","assignee":"Tatsiana Klimko","reporter":"Alena Zhalannaya","priority":"Medium","status":"Analysis","resolution":"","created":"10.04.2026","resolved":""},{"key":"AS-14067","type":"Bugs","summary":"Card's Duplicate","assignee":"Tatsiana Klimko","reporter":"Andrei Mezhnin","priority":"Medium","status":"Analysis","resolution":"","created":"09.04.2026","resolved":""},{"key":"AS-14154","type":"Bugs","summary":"can't disqualify lead","assignee":"Tatsiana Klimko","reporter":"Artsiom Shmialiou","priority":"Medium","status":"Analysis","resolution":"","created":"14.04.2026","resolved":""},{"key":"AS-14167","type":"Bugs","summary":"Can't find the opportunity in SF","assignee":"Tatsiana Klimko","reporter":"Darya Kukharchuk","priority":"Medium","status":"Analysis","resolution":"","created":"14.04.2026","resolved":""},{"key":"AS-14168","type":"Bugs","summary":"Unification of two doubled accounts","assignee":"Tatsiana Klimko","reporter":"Anastasiia Topal","priority":"Medium","status":"Analysis","resolution":"","created":"14.04.2026","resolved":""},{"key":"AS-14049","type":"Improvements","summary":"Test OPG SF","assignee":"Tatsiana Klimko","reporter":"Roman Moisiak","priority":"Medium","status":"Validation","resolution":"","created":"08.04.2026","resolved":""}];
+
+// ---- HELPERS ----
+const statusBadge = s => {
+  const m = {'Done':'bg','To Do':'br','In Progress':'bb','on hold':'bam','--':'bgy','Analysis':'bpu','Rejected':'br','New':'bgy','Waiting for approval':'bam','Validation':'bb'};
+  return `<span class="b ${m[s]||'bgy'}">${s||'—'}</span>`;
+};
+const priorityBadge = p => {
+  const m = {'Blocker':'br','High':'bam','Medium':'bb','Low':'bgy'};
+  return `<span class="b ${m[p]||'bgy'}">${p||'—'}</span>`;
+};
+const reasonBadge = r => r ? `<span class="b bpu" style="font-size:10px;">${r}</span>` : '';
+const typeBadge = t => {
+  if(!t) return '';
+  const m = {'Bugs':'br','Get access to Internal Projects':'bb','Improvements':'bg','Working with Database':'bam'};
+  const labels = {'Bugs':'Баг','Get access to Internal Projects':'Доступ','Improvements':'Улучш.','Working with Database':'БД'};
+  return `<span class="b ${m[t]||'bgy'}">${labels[t]||t}</span>`;
+};
+
+// ---- GANTT TABLE ----
+let gSort = {col:'id', dir:1};
+function sortGantt(col) {
+  gSort = gSort.col===col ? {col, dir:-gSort.dir} : {col, dir:1};
+  renderGantt();
+}
+function renderGantt() {
+  const search = document.getElementById('gSearch').value.toLowerCase();
+  const fStatus = document.getElementById('gStatus').value;
+  const fArea = document.getElementById('gArea').value;
+  const fReason = document.getElementById('gReason').value;
+  const fPriority = document.getElementById('gPriority').value;
+  let data = GANTT.filter(r =>
+    (!search || r.summary.toLowerCase().includes(search) || r.id.includes(search)) &&
+    (!fStatus || r.status === fStatus) &&
+    (!fArea || r.area === fArea) &&
+    (!fReason || r.reason === fReason) &&
+    (!fPriority || r.priority === fPriority)
+  );
+  data.sort((a,b) => {
+    const av = String(a[gSort.col]||''), bv = String(b[gSort.col]||'');
+    return av.localeCompare(bv, undefined, {numeric:true}) * gSort.dir;
+  });
+  document.getElementById('gCount').textContent = `Показано: ${data.length} из ${GANTT.length}`;
+  const tbody = document.getElementById('gBody');
+  tbody.innerHTML = data.map(r => `<tr>
+    <td style="white-space:nowrap">${r.id}</td>
+    <td><span class="b bgy" style="font-size:10px">${r.area||'—'}</span></td>
+    <td><div class="summary-cell" title="${r.summary}">${r.summary}</div></td>
+    <td>${priorityBadge(r.priority)}</td>
+    <td>${statusBadge(r.status)}</td>
+    <td>${reasonBadge(r.reason)}</td>
+    <td style="white-space:nowrap;font-size:11px;color:var(--color-text-secondary)">${r.assignee&&r.assignee!=='-'&&r.assignee!=='nan'?r.assignee.split(' ')[0]:''}</td>
+    <td style="white-space:nowrap;font-size:11px">${r.jira?`<span style="color:var(--color-text-info)">${r.jira}</span>`:''}</td>
+  </tr>`).join('');
+}
+
+// ---- JIRA TABLE ----
+let jSort = {col:'created', dir:1};
+function sortJira(col) {
+  jSort = jSort.col===col ? {col, dir:-jSort.dir} : {col, dir:1};
+  renderJira();
+}
+function renderJira() {
+  const search = document.getElementById('jSearch').value.toLowerCase();
+  const fStatus = document.getElementById('jStatus').value;
+  const fType = document.getElementById('jType').value;
+  const fDate = document.getElementById('jDate').value;
+  let data = JIRA.filter(r =>
+    r.key && r.key !== 'NaT' &&
+    (!search || r.summary.toLowerCase().includes(search) || r.key.toLowerCase().includes(search)) &&
+    (!fStatus || r.status === fStatus) &&
+    (!fType || r.type === fType) &&
+    (!fDate || r.created === fDate)
+  );
+  data.sort((a,b) => {
+    const av = String(a[jSort.col]||''), bv = String(b[jSort.col]||'');
+    return av.localeCompare(bv, undefined, {numeric:true}) * jSort.dir;
+  });
+  document.getElementById('jCount').textContent = `Показано: ${data.length} из ${JIRA.filter(r=>r.key&&r.key!=='NaT').length}`;
+  const tbody = document.getElementById('jBody');
+  tbody.innerHTML = data.map(r => `<tr>
+    <td style="white-space:nowrap;font-size:11px;color:var(--color-text-info)">${r.key}</td>
+    <td>${typeBadge(r.type)}</td>
+    <td><div class="summary-cell" title="${r.summary}">${r.summary}</div></td>
+    <td>${statusBadge(r.status)}</td>
+    <td style="white-space:nowrap;font-size:11px">${r.created}</td>
+    <td style="white-space:nowrap;font-size:11px">${r.resolved||'—'}</td>
+    <td style="font-size:11px;color:var(--color-text-secondary)">${r.reporter}</td>
+  </tr>`).join('');
+}
+
+// ---- REASONS TABLE ----
+let rSort = {col:'reason', dir:1};
+function sortReasons(col) {
+  rSort = rSort.col===col ? {col, dir:-rSort.dir} : {col, dir:1};
+  renderReasons();
+}
+function renderReasons() {
+  const fReason = document.getElementById('rReason').value;
+  const fStatus = document.getElementById('rStatus').value;
+  const fArea = document.getElementById('rArea').value;
+  let data = GANTT.filter(r =>
+    r.reason &&
+    (!fReason || r.reason === fReason) &&
+    (!fStatus || r.status === fStatus) &&
+    (!fArea || r.area === fArea)
+  );
+  data.sort((a,b) => {
+    const av = String(a[rSort.col]||''), bv = String(b[rSort.col]||'');
+    return av.localeCompare(bv) * rSort.dir;
+  });
+  document.getElementById('rCount').textContent = `Показано: ${data.length} из ${GANTT.filter(r=>r.reason).length}`;
+  const tbody = document.getElementById('rBody');
+  tbody.innerHTML = data.map(r => `<tr>
+    <td>${reasonBadge(r.reason)}</td>
+    <td><span class="b bgy" style="font-size:10px">${r.area||'—'}</span></td>
+    <td><div class="summary-cell" title="${r.summary}">${r.summary}</div></td>
+    <td>${statusBadge(r.status)}</td>
+    <td>${priorityBadge(r.priority)}</td>
+    <td style="font-size:11px;color:var(--color-text-secondary)">${r.assignee&&r.assignee!=='-'&&r.assignee!=='nan'?r.assignee.split(' ')[0]:''}</td>
+  </tr>`).join('');
+}
+
+// ---- CHARTS ----
+function sw(id) {
+  const ids=['stat','jirastat','reasons','ganttlist','jiralist','reasonlist'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',ids[i]===id));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(id==='ganttlist' && !document.getElementById('gBody').innerHTML) renderGantt();
+  if(id==='jiralist' && !document.getElementById('jBody').innerHTML) renderJira();
+  if(id==='reasonlist' && !document.getElementById('rBody').innerHTML) renderReasons();
+}
+
+const days=['06.04','07.04','08.04','09.04','10.04','13.04','14.04'];
+const gc={x:{ticks:{color:'#667085',font:{size:11},autoSkip:false}},y:{ticks:{color:'#667085',font:{size:11}},grid:{color:'rgba(22,32,51,0.08)'}}};
+
+new Chart(document.getElementById('g1'),{type:'bar',data:{labels:days,datasets:[
+  {label:'Новых',data:[0,43,39,39,8,14,15],backgroundColor:'rgba(242,139,84,0.88)',borderRadius:8,borderSkipped:false,borderColor:'#D85A30',borderWidth:1,yAxisID:'y',order:2},
+  {label:'Done',data:[0,26,26,14,28,7,10],backgroundColor:'rgba(44,168,127,0.88)',borderRadius:8,borderSkipped:false,borderColor:'#197255',borderWidth:1,yAxisID:'y',order:2},
+  {label:'Накопленно',data:[21,64,103,142,150,164,179],type:'line',borderColor:'#4a7dff',backgroundColor:'transparent',pointBackgroundColor:'#4a7dff',pointRadius:3,tension:.3,yAxisID:'y2',order:1}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:__tooltip},
+scales:{y:{position:'left',ticks:{color:'#667085',font:{size:11}},grid:{color:'rgba(22,32,51,0.08)'}},y2:{position:'right',ticks:{color:'#4a7dff',font:{size:11}},grid:{drawOnChartArea:false}},x:{ticks:{color:'#667085',font:{size:11},autoSkip:false}}}}});
+
+new Chart(document.getElementById('j1'),{type:'bar',data:{labels:days,datasets:[
+  {label:'Баги',data:[20,21,19,4,13,8,10],backgroundColor:'rgba(242,139,84,0.88)',borderRadius:8,borderSkipped:false,stack:'s'},
+  {label:'Доступ',data:[8,5,1,2,1,2,0],backgroundColor:'rgba(74,125,255,0.88)',borderRadius:8,borderSkipped:false,stack:'s'},
+  {label:'Улучшения',data:[1,1,2,0,0,0,0],backgroundColor:'rgba(44,168,127,0.88)',borderRadius:8,borderSkipped:false,stack:'s'},
+  {label:'БД/прочее',data:[0,1,0,0,0,1,0],backgroundColor:'rgba(227,179,65,0.88)',borderRadius:8,borderSkipped:false,stack:'s'}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:__tooltip},
+scales:{x:{stacked:true,ticks:{color:'#667085',font:{size:11},autoSkip:false}},y:{stacked:true,ticks:{color:'#667085',font:{size:11}},grid:{color:'rgba(22,32,51,0.08)'}}}}});
+
+new Chart(document.getElementById('j2'),{type:'bar',data:{labels:days,datasets:[
+  {label:'Открыто',data:[20,21,19,4,13,8,10],backgroundColor:'rgba(242,139,84,0.88)',borderRadius:8,borderSkipped:false,borderColor:'#D85A30',borderWidth:1},
+  {label:'Решено',data:[5,13,13,10,13,10,11],backgroundColor:'rgba(44,168,127,0.88)',borderRadius:8,borderSkipped:false,borderColor:'#197255',borderWidth:1}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:__tooltip},scales:gc}});
+
+new Chart(document.getElementById('c1'),{type:'bar',data:{labels:days,datasets:[
+  {label:'Gantt',data:[21,43,39,39,8,14,15],backgroundColor:'rgba(242,139,84,0.88)',borderRadius:8,borderSkipped:false,borderColor:'#D85A30',borderWidth:1},
+  {label:'Jira',data:[20,21,19,4,13,8,10],backgroundColor:'rgba(74,125,255,0.88)',borderRadius:8,borderSkipped:false,borderColor:'#4a7dff',borderWidth:1}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:__tooltip},scales:gc}});
+
+const reasons=['Unexpected req.','Bug - Code','Permission issue','Other','RTFM','Bug - Migration','CRM DB issue','AirFlow'];
+const rColors=['rgba(74,125,255,0.88)','rgba(242,139,84,0.88)','rgba(227,179,65,0.88)','#9aa4b2','#5DCAA5','#8e83f6','rgba(44,168,127,0.88)','#F4C0D1'];
+new Chart(document.getElementById('r1'),{type:'bar',data:{labels:reasons,datasets:[{data:[37,30,27,19,11,8,5,4],backgroundColor:rColors,borderWidth:0}]},
+options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:__tooltip},
+scales:{x:{ticks:{color:'#667085',font:{size:11}},grid:{color:'rgba(22,32,51,0.08)'}},y:{ticks:{color:'#667085',font:{size:11}}}}}});
+
+new Chart(document.getElementById('r2'),{type:'bar',data:{labels:reasons,datasets:[
+  {label:'Done',data:[28,22,25,12,10,7,5,1],backgroundColor:'rgba(44,168,127,0.88)',borderRadius:8,borderSkipped:false,stack:'s'},
+  {label:'In Progress',data:[3,4,0,1,0,0,0,2],backgroundColor:'rgba(74,125,255,0.88)',borderRadius:8,borderSkipped:false,stack:'s'},
+  {label:'To Do',data:[4,4,1,2,1,0,0,1],backgroundColor:'rgba(227,179,65,0.88)',borderRadius:8,borderSkipped:false,stack:'s'},
+  {label:'On Hold',data:[2,0,1,3,0,1,0,0],backgroundColor:'#9aa4b2',borderRadius:8,borderSkipped:false,stack:'s'}
+]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:__tooltip},
+scales:{x:{stacked:true,ticks:{color:'#667085',font:{size:11}},grid:{color:'rgba(22,32,51,0.08)'}},y:{stacked:true,ticks:{color:'#667085',font:{size:9}}}}}});
+
+new Chart(document.getElementById('r3'),{type:'bar',data:{labels:reasons,datasets:[
+  {label:'Staffing',data:[15,17,8,6,2,4,0,4],backgroundColor:'rgba(74,125,255,0.88)',borderRadius:8,borderSkipped:false,stack:'s'},
+  {label:'Sales',data:[14,5,7,11,6,2,4,0],backgroundColor:'rgba(242,139,84,0.88)',borderRadius:8,borderSkipped:false,stack:'s'},
+  {label:'DM/PM',data:[4,1,4,0,2,2,0,0],backgroundColor:'rgba(44,168,127,0.88)',borderRadius:8,borderSkipped:false,stack:'s'},
+  {label:'CV',data:[2,6,8,2,1,0,0,0],backgroundColor:'rgba(227,179,65,0.88)',borderRadius:8,borderSkipped:false,stack:'s'},
+  {label:'Pre-Sale DM',data:[2,1,0,0,0,0,1,0],backgroundColor:'#8e83f6',borderRadius:8,borderSkipped:false,stack:'s'}
+]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:__tooltip},
+scales:{x:{stacked:true,ticks:{color:'#667085',font:{size:11}},grid:{color:'rgba(22,32,51,0.08)'}},y:{stacked:true,ticks:{color:'#667085',font:{size:9}}}}}});
+</script>
